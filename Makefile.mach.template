@@ -1,0 +1,13 @@
+### Makefile.mach for Disco ###
+
+# This file contains machine-specific variables for building Disco.
+
+#C Compiler
+CC = gcc
+
+# Location of HDF5 Library
+H55 = /opt/local
+
+#Extra compiling/linking flags
+LOCAL_CFLAGS = 
+LOCAL_LDFLAGS = 

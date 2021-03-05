@@ -1,0 +1,7 @@
+disco
+*.swp
+*.o
+Makefile.in
+Makefile.mach
+in.par
+times.log
