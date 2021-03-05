@@ -247,11 +247,11 @@ void setupCells_aos( struct domain * theDomain ){
         } 
     }
 
-    //Setup real cells.
-    for( k=NgZa ; k<Nz-NgZb ; ++k )
+    //Setup all cells.
+    for( k=0 ; k<Nz ; ++k )
     {
         double z = get_centroid( z_kph[k], z_kph[k-1], 2);
-        for( j=NgRa ; j<Nr-NgRb ; ++j )
+        for( j=0 ; j<Nr ; ++j )
         {
             double r = get_centroid( r_jph[j], r_jph[j-1], 1);
             int jk = j+Nr*k;
@@ -273,10 +273,10 @@ void setupCells_aos( struct domain * theDomain ){
         }    
     }    
 
-    for( k=NgZa ; k<Nz-NgZb ; ++k)
+    for( k=0 ; k<Nz ; ++k)
     {
       double z = get_centroid( z_kph[k], z_kph[k-1], 2);
-      for( j=NgRa ; j<Nr-NgRb ; ++j ){
+      for( j=0 ; j<Nr ; ++j ){
          double r = get_centroid( r_jph[j], r_jph[j-1], 1);
          int jk = j+Nr*k;
          for( i=0 ; i<Np[jk] ; ++i ){
