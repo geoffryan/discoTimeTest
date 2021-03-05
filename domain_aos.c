@@ -244,6 +244,7 @@ void setupCells_aos( struct domain * theDomain ){
     }
 
     //Setup all cells.
+    int q;
     for( k=0 ; k<Nz ; ++k )
     {
         double z = get_centroid( z_kph[k], z_kph[k-1], 2);
@@ -265,6 +266,12 @@ void setupCells_aos( struct domain * theDomain ){
                 double dV = get_dV(xp, xm);
                 initial( c->prim , x );
                 prim2cons( c->prim , c->cons , x , dV, xp, xm);
+                for(q=0; q<NUM_Q; q++)
+                {
+                    c->gradr[q] = 0.0;
+                    c->gradp[q] = 0.0;
+                    c->gradz[q] = 0.0;
+                }
             }
         }    
     }    

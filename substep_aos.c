@@ -283,6 +283,8 @@ void riemann_phi_aos(struct cell *cL, struct cell *cR, double dt,
         prim[q] = 0.5*(primL[q] + primR[q]);
 
     double F[NUM_Q], VF[NUM_Q];
+    for(q=0; q<NUM_Q; q++)
+        VF[q] = 0.0;
 
     flux(prim, F, x, n, xp, xm);
     visc_flux(prim, cL->gradr, cL->gradp, cL->gradz,
@@ -290,8 +292,8 @@ void riemann_phi_aos(struct cell *cL, struct cell *cR, double dt,
 
     for(q=0; q<NUM_Q; q++)
     {
-        cL->cons[q] -= (F[q] + VF[q]) * 1.0e-3 * dA;
-        cR->cons[q] += (F[q] + VF[q]) * 1.0e-3 * dA;
+        cL->cons[q] -= (F[q] + VF[q]) * dt * dA;
+        cR->cons[q] += (F[q] + VF[q]) * dt * dA;
     }
 }
                 
@@ -318,15 +320,17 @@ void riemann_r_aos(struct face *f, double dt, double r, double zp, double zm)
         prim[q] = 0.5*(primL[q] + primR[q]);
 
     double F[NUM_Q], VF[NUM_Q];
+    for(q=0; q<NUM_Q; q++)
+        VF[q] = 0.0;
 
     flux(prim, F, f->cm, n, xp, xm);
     visc_flux(prim, f->L->gradr, f->L->gradp, f->L->gradz,
               VF, f->cm, n);
-    
+
     for(q=0; q<NUM_Q; q++)
     {
-        f->L->cons[q] -= (F[q] + VF[q]) * 1.0e-3 * f->dA * dt;
-        f->R->cons[q] += (F[q] + VF[q]) * 1.0e-3 * f->dA * dt;
+        f->L->cons[q] -= (F[q] + VF[q]) * dt * f->dA * dt;
+        f->R->cons[q] += (F[q] + VF[q]) * dt * f->dA * dt;
     }
 }
                 
@@ -353,6 +357,8 @@ void riemann_z_aos(struct face *f, double dt, double rp, double rm, double z)
         prim[q] = 0.5*(primL[q] + primR[q]);
 
     double F[NUM_Q], VF[NUM_Q];
+    for(q=0; q<NUM_Q; q++)
+        VF[q] = 0.0;
 
     flux(prim, F, f->cm, n, xp, xm);
     visc_flux(prim, f->L->gradr, f->L->gradp, f->L->gradz,
