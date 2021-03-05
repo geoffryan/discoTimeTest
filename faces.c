@@ -241,6 +241,6 @@ void setup_faces(struct domain *theDomain, int dim)
 
     buildfaces( theDomain , dim , 0 );
     int Nf = nn[NN];
-    *theFaces = (struct face *) malloc( Nf*sizeof(struct face) );
+    *theFaces = (struct face *) realloc(*theFaces, Nf*sizeof(struct face) );
     buildfaces( theDomain , dim , 1 );
 }

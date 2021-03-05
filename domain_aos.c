@@ -225,10 +225,6 @@ void setupCells_aos( struct domain * theDomain ){
     int Nr = theDomain->Nr;
     int Nz = theDomain->Nz;
     int * Np = theDomain->Np;
-    int NgRa = theDomain->NgRa;
-    int NgRb = theDomain->NgRb;
-    int NgZa = theDomain->NgZa;
-    int NgZb = theDomain->NgZb;
     double * r_jph = theDomain->r_jph;
     double * z_kph = theDomain->z_kph;
 
@@ -312,6 +308,11 @@ void freeDomain_aos( struct domain * theDomain ){
    free( theDomain->z_kph );
    free( theDomain->fIndex_r );
    free( theDomain->fIndex_z );
+
+   if(theDomain->theFaces_1 != NULL)
+       free(theDomain->theFaces_1);
+   if(theDomain->theFaces_2 != NULL)
+       free(theDomain->theFaces_2);
 
 }
 
