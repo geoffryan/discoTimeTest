@@ -19,7 +19,13 @@ int main( int argc , char * argv[] )
     setupDomain_aos( &theDomain );
 #endif
 
-    theDomain.final_step = theDomain.theParList.nsteps;
+    double hash = 0.0;
+
+#if TYPE == 0
+    hash = hash_aos(&theDomain);
+#endif
+    
+    printf("HASH: %.16le\n", hash);
 
     while( theDomain.current_step < theDomain.final_step )
     {
@@ -30,7 +36,7 @@ int main( int argc , char * argv[] )
     }
 
 #if TYPE == 0
-    double hash = hash_aos(&theDomain);
+    hash = hash_aos(&theDomain);
 #endif
 
     printf("HASH: %.16le\n", hash);
