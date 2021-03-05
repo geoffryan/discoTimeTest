@@ -3,7 +3,7 @@
 #include "hydro.h"
 #include "geometry.h"
 
-static double gamma_law = 5.0/3.0; 
+static double gamma_law = 1.66666667; 
 
 int set_B_flag()
 {
