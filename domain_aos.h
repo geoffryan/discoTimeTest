@@ -9,6 +9,6 @@ void setupGrid_aos(struct domain *theDomain);
 void setupDomain_aos(struct domain *theDomain);
 void setupCells_aos(struct domain *theDomain);
 void freeDomain_aos(struct domain *theDomain);
-double hash_aos(struct domain *theDomain);
+double hash_aos(struct domain *theDomain, int qqq);
 
 #endif

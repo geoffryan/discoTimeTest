@@ -22,10 +22,22 @@ int main( int argc , char * argv[] )
     double hash = 0.0;
 
 #if TYPE == 0
-    hash = hash_aos(&theDomain);
+    hash = hash_aos(&theDomain, 0);
+    printf("HASH0: %.16le\n", hash);
+    hash = hash_aos(&theDomain, 1);
+    printf("HASH1: %.16le\n", hash);
+    hash = hash_aos(&theDomain, 2);
+    printf("HASH2: %.16le\n", hash);
+    hash = hash_aos(&theDomain, 3);
+    printf("HASH3: %.16le\n", hash);
+    hash = hash_aos(&theDomain, 4);
+    printf("HASH4: %.16le\n", hash);
+    hash = hash_aos(&theDomain, 5);
+    printf("HASH5: %.16le\n", hash);
+    hash = hash_aos(&theDomain, 6);
+    printf("HASH6: %.16le\n", hash);
 #endif
     
-    printf("HASH: %.16le\n", hash);
 
     while( theDomain.current_step < theDomain.final_step )
     {
@@ -36,7 +48,7 @@ int main( int argc , char * argv[] )
     }
 
 #if TYPE == 0
-    hash = hash_aos(&theDomain);
+    hash = hash_aos(&theDomain, -1);
 #endif
 
     printf("HASH: %.16le\n", hash);
