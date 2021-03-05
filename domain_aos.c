@@ -325,7 +325,7 @@ void freeDomain_aos( struct domain * theDomain ){
 
 double hash_aos(struct domain *theDomain)
 {
-    int i, j, k, q;
+    int i, j, k;
     double sum = 0;
 
     for(k=0; k<theDomain->Nz; k++)
@@ -334,9 +334,10 @@ double hash_aos(struct domain *theDomain)
             int jk = k * theDomain->Nr + j;
             for(i=0; i<theDomain->Np[jk]; i++)
             {
-                //for(q=0; q<NUM_Q; q++)
-                //    sum += theDomain->theCells[jk][i].prim[q]; 
-                sum += theDomain->theCells[jk][i].prim[RHO]; 
+                int q;
+                for(q=0; q<NUM_Q; q++)
+                    sum += theDomain->theCells[jk][i].prim[q]; 
+                //sum += theDomain->theCells[jk][i].prim[RHO]; 
             }
         }
 
