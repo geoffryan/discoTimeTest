@@ -75,6 +75,23 @@ struct domain{
    struct face * theFaces_2;
    int * fIndex_r;
    int * fIndex_z;
+
+   //SOA1 setup
+   double **prim;
+   double **cons;
+   double **gradr;
+   double **gradp;
+   double **gradz;
+   double **dphi;
+   double **piph;
+
+   double **fr_dA;
+   double **fr_phib;
+   double **fr_phif;
+
+   double **fz_dA;
+   double **fz_phib;
+   double **fz_phif;
 };
 
 struct cell{

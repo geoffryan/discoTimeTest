@@ -4,4 +4,4 @@ disco
 Makefile.in
 Makefile.mach
 in.par
-times.log
+*.log

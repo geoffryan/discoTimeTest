@@ -1,5 +1,5 @@
-#ifndef DISCO_SUBSTEP_H
-#define DISCO_SUBSTEP_H
+#ifndef DISCO_SUBSTEP_AOS_H
+#define DISCO_SUBSTEP_AOS_H
 
 #include "header.h"
 
