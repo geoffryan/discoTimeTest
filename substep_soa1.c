@@ -159,8 +159,15 @@ void flux_phi_soa1(struct domain *theDomain)
             {
                 int iR = iL < Np[jk]-1 ? iL + 1 : 0;
 
-                riemann_phi_soa1(theDomain, jk, iL, iR, 1.0e-3,
-                                 rm, rp, r, zm, zp, z);
+                //riemann_phi_soa1(theDomain, jk, iL, iR, 1.0e-3,
+                //                 rm, rp, r, zm, zp, z);
+
+                riemann_phi_soa1_alt(theDomain->prim[jk], theDomain->cons[jk],
+                                     theDomain->dphi[jk], theDomain->piph[jk],
+                                     theDomain->gradr[jk], theDomain->gradp[jk],
+                                     theDomain->gradz[jk],
+                                     iL, iR, 1.0e-3,
+                                     rm, rp, r, zm, zp, z);
             }
         }
     }
@@ -211,5 +218,52 @@ void riemann_phi_soa1(struct domain *theDomain, int jk, int iL, int iR,
     {
         theDomain->cons[jk][iqL+q] -= (F[q] + VF[q]) * dt * dA;
         theDomain->cons[jk][iqR+q] += (F[q] + VF[q]) * dt * dA;
+    }
+}
+
+void riemann_phi_soa1_alt(double *prim, double *cons, double *dphi,
+                      double *piph,
+                      double *gradr, double *gradp, double *gradz,
+                      int iL, int iR,
+                      double dt, double rm, double rp, double r,
+                      double zm, double zp, double z)
+{   
+    double xp[3] = {rp, piph[iL], zp};
+    double xm[3] = {rm, piph[iL], zm};
+    double x[3] = {r, piph[iL], z};
+    double dA = get_dA(xp,xm,0); 
+
+    double primL[NUM_Q];
+    double primR[NUM_Q];
+    double primF[NUM_Q];
+
+    double dphiL = 0.5*dphi[iL];
+    double dphiR = 0.5*dphi[iR];
+    
+    double n[3] = {0.0, 1.0, 0.0};
+
+    int iqL = NUM_Q * iL;
+    int iqR = NUM_Q * iR;
+
+    int q;
+    for(q=0; q<NUM_Q; q++)
+    {
+        primL[q] = prim[iqL+q] + dphiL * gradp[iqL+q];
+        primR[q] = prim[iqR+q] - dphiR * gradp[iqR+q];
+    }
+    for(q=0; q<NUM_Q; q++)
+        primF[q] = 0.5*(primL[q] + primR[q]);
+
+    double F[NUM_Q], VF[NUM_Q];
+    for(q=0; q<NUM_Q; q++)
+        VF[q] = 0.0;
+
+    flux(primF, F, x, n, xp, xm);
+    visc_flux(primF, gradr+iqL, gradp+iqL, gradz+iqL, VF, x, n);
+
+    for(q=0; q<NUM_Q; q++)
+    {
+        cons[iqL+q] -= (F[q] + VF[q]) * dt * dA;
+        cons[iqR+q] += (F[q] + VF[q]) * dt * dA;
     }
 }
