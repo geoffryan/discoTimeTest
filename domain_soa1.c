@@ -43,10 +43,43 @@ void setupDomain_soa1(struct domain *theDomain)
     theDomain->piph = (double **)malloc(Nr*Nz*sizeof(double *));
     for(jk=0; jk < Nr*Nz; jk++)
         theDomain->piph[jk] = (double *)malloc(Np[jk]*sizeof(double *));
-
+    
+    theDomain->I0 = (int *)malloc(Nr*Nz*sizeof(int));
+    
+    int j, k;
+    theDomain->Nfr = (int *)malloc((Nr-1)*Nz*sizeof(int));
+    for(k=0; k<Nz; k++)
+        for(j=0; j < Nr-1; j++)
+            theDomain->Nfr[(Nr-1)*k+j] = Np[k*Nr+j] + Np[k*Nr+j+1];
+    int *Nfr = theDomain->Nfr;
+    theDomain->fr_dA = (double **)malloc((Nr-1)*Nz * sizeof(double *));
+    for(jk=0; jk < (Nr-1)*Nz; jk++)
+        theDomain->fr_dA[jk] = (double *)malloc(Nfr[jk] * sizeof(double));
+    theDomain->fr_phib = (double **)malloc((Nr-1)*Nz * sizeof(double *));
+    for(jk=0; jk < (Nr-1)*Nz; jk++)
+        theDomain->fr_phib[jk] = (double *)malloc(Nfr[jk] * sizeof(double));
+    theDomain->fr_phif = (double **)malloc((Nr-1)*Nz * sizeof(double *));
+    for(jk=0; jk < (Nr-1)*Nz; jk++)
+        theDomain->fr_phif[jk] = (double *)malloc(Nfr[jk] * sizeof(double));
+    
+    theDomain->Nfz = (int *)malloc(Nr*(Nz-1)*sizeof(int));
+    for(k=0; k<Nz-1; k++)
+        for(j=0; j < Nr; j++)
+            theDomain->Nfz[Nr*k+j] = Np[k*Nr+j] + Np[(k+1)*Nr+j];
+    int *Nfz = theDomain->Nfz;
+    theDomain->fz_dA = (double **)malloc(Nr*(Nz-1) * sizeof(double *));
+    for(jk=0; jk < Nr*(Nz-1); jk++)
+        theDomain->fz_dA[jk] = (double *)malloc(Nfz[jk] * sizeof(double));
+    theDomain->fz_phib = (double **)malloc(Nr*(Nz-1) * sizeof(double *));
+    for(jk=0; jk < Nr*(Nz-1); jk++)
+        theDomain->fz_phib[jk] = (double *)malloc(Nfz[jk] * sizeof(double));
+    theDomain->fz_phif = (double **)malloc(Nr*(Nz-1) * sizeof(double *));
+    for(jk=0; jk < Nr*(Nz-1); jk++)
+        theDomain->fz_phif[jk] = (double *)malloc(Nfz[jk] * sizeof(double));
+    
 
     // Set phi face locations
-    int i, j, k;
+    int i;
     double Pmax = theDomain->phi_max;
 
     for(k=0; k<Nz; k++)
@@ -110,6 +143,196 @@ void setupDomain_soa1(struct domain *theDomain)
             }
         }
     }
+
+
+    build_faces_soa1(theDomain);
+}
+
+void build_faces_soa1(struct domain *theDomain)
+{
+    int Nr = theDomain->Nr;
+    int Nz = theDomain->Nz;
+    int *Np = theDomain->Np;
+    double phi_max = theDomain->phi_max;
+    double **piph = theDomain->piph;
+    double **dphi = theDomain->dphi;
+    int *I0 = theDomain->I0;
+
+    double *r_jph = theDomain->r_jph;
+    double *z_kph = theDomain->z_kph;
+
+    int *Nfr = theDomain->Nfr;
+    double **fr_dA = theDomain->fr_dA;
+    double **fr_phib = theDomain->fr_phib;
+    double **fr_phif = theDomain->fr_phif;
+    
+    int *Nfz = theDomain->Nfz;
+    double **fz_dA = theDomain->fz_dA;
+    double **fz_phib = theDomain->fz_phib;
+    double **fz_phif = theDomain->fz_phif;
+
+    int jk;
+    
+    // Find faces crossing phi=0 & re-align piph to (0, phi_max]
+    for(jk=0; jk<Nr*Nz; jk++)
+    {
+        int i;
+
+        while(piph[jk][Np[jk]-1] > phi_max)
+            piph[jk][Np[jk]-1] -= phi_max;
+        while(piph[jk][Np[jk]-1] <= 0)
+            piph[jk][Np[jk]-1] += phi_max;
+        
+        I0[jk] = -1;
+
+        int adjust_check = 0;
+
+        for(i=0; i<Np[jk]; i++)
+        {
+            while(piph[jk][i] > phi_max)
+                piph[jk][i] -= phi_max;
+            while(piph[jk][i] <= 0)
+                piph[jk][i] += phi_max;
+
+            int im = i == 0 ? Np[jk]-1 : i-1;
+            dphi[jk][i] = piph[jk][i] - piph[jk][im];
+
+            if(dphi[jk][i] < 0.0)
+            {
+                I0[jk] = i;
+                dphi[jk][i] += phi_max;
+                adjust_check++;
+            }
+        }
+
+        if(I0[jk] == -1)
+            printf("BAD ALIGNMENT\n");
+        if(adjust_check != 1)
+            printf("Bad # of adjustments: %d\n", adjust_check);
+    }
+
+    // Now that we have a set of adjacent cells, we can find & compute faces
+
+    // radial faces
+    int k;
+    for(k=0; k<Nz; k++)
+    {
+        double zm = z_kph[k-1];
+        double zp = z_kph[k];
+        
+        int j;
+        for(j=0; j<Nr-1; j++)
+        {
+            int jkL = k*Nr + j;
+            int jkR = k*Nr + j+1;
+            int jkf = k*(Nr-1) + j;
+
+            double r = r_jph[j];
+
+            int iL = I0[jkL];
+            int iR = I0[jkR];
+            int i;
+            for(i=0; i<Nfr[jkf]; i++)
+            {
+                double phifL = piph[jkL][iL];
+                double phifR = piph[jkR][iR];
+                double phibL = phifL - dphi[jkL][iL];
+                double phibR = phifR - dphi[jkR][iR];
+                double phif = phifL > phifR ? phifR : phifL;
+                double phib = phibL > phibR ? phibL : phibR;
+                
+                //printf("    %d %d %d   %.03lf %.03lf\n", i, iL, iR,
+                //        phifL, phifR);
+
+                double xp[3] = {r, phif, zp};
+                double xm[3] = {r, phib, zm};
+
+                fr_dA[jkf][i] = get_dA(xp, xm, 1);
+                fr_phib[jkf][i] = phib;
+                fr_phif[jkf][i] = phif;
+
+                double dpLR = phifL - phifR;
+                while(dpLR > 0.5*phi_max)
+                    dpLR -= phi_max;
+                while(dpLR < -0.5*phi_max)
+                    dpLR += phi_max;
+
+                if(dpLR < 0.0)
+                {
+                    iL++;
+                    if(iL == Np[jkL])
+                        iL = 0;
+                }
+                else
+                {
+                    iR++;
+                    if(iR == Np[jkR])
+                        iR = 0;
+                }
+            }
+            if(iL != I0[jkL] || iR != I0[jkR])
+                printf("Radial faces didn't finish: %d %d (%d) %d %d (%d)\n",
+                        iL, I0[jkL], Np[jkL], iR, I0[jkR], Np[jkR]);
+        }
+    }
+
+    for(k=0; k<Nz-1; k++)
+    {
+        double z = z_kph[k];
+        
+        int j;
+        for(j=0; j<Nr; j++)
+        {
+            int jkL = k*Nr + j;
+            int jkR = (k+1)*Nr + j;
+            int jkf = k*Nr + j;
+
+            double rm = r_jph[j-1];
+            double rp = r_jph[j];
+
+            int iL = I0[jkL];
+            int iR = I0[jkR];
+            int i;
+            for(i=0; i<Nfz[jkf]; i++)
+            {
+                double phifL = piph[jkL][iL];
+                double phifR = piph[jkR][iR];
+                double phibL = phifL - dphi[jkL][iL];
+                double phibR = phifR - dphi[jkR][iR];
+                double phif = phifL > phifR ? phifR : phifL;
+                double phib = phibL > phibR ? phibL : phibR;
+
+                double xp[3] = {rp, phif, z};
+                double xm[3] = {rm, phib, z};
+
+                fz_dA[jkf][i] = get_dA(xp, xm, 2);
+                fz_phib[jkf][i] = phib;
+                fz_phif[jkf][i] = phif;
+
+                double dpLR = phifL - phifR;
+                while(dpLR > 0.5*phi_max)
+                    dpLR -= phi_max;
+                while(dpLR < -0.5*phi_max)
+                    dpLR += phi_max;
+
+                if(dpLR < 0.0)
+                {
+                    iL++;
+                    if(iL == Np[jkL])
+                        iL = 0;
+                }
+                else
+                {
+                    iR++;
+                    if(iR == Np[jkR])
+                        iR = 0;
+                }
+            }
+            if(iL != I0[jkL] || iR != I0[jkR])
+                printf("Vertical faces didn't finish: %d %d (%d) %d %d (%d)\n",
+                        iL, I0[jkL], Np[jkL], iR, I0[jkR], Np[jkR]);
+        }
+    }
 }
 
 
@@ -135,6 +358,22 @@ void freeDomain_soa1(struct domain *theDomain)
     free(theDomain->gradz);
     free(theDomain->piph);
     free(theDomain->dphi);
+
+    free(theDomain->I0);
+
+    if(theDomain->fr_dA != NULL)
+        free(theDomain->fr_dA);
+    if(theDomain->fr_phib != NULL)
+        free(theDomain->fr_phib);
+    if(theDomain->fr_phif != NULL)
+        free(theDomain->fr_phif);
+
+    if(theDomain->fz_dA != NULL)
+        free(theDomain->fz_dA);
+    if(theDomain->fz_phib != NULL)
+        free(theDomain->fz_phib);
+    if(theDomain->fz_phif != NULL)
+        free(theDomain->fz_phif);
 }
 
 double hash_soa1(struct domain *theDomain, int qqq)

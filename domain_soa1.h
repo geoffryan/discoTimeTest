@@ -4,6 +4,7 @@
 #include "header.h"
 
 void setupDomain_soa1(struct domain *theDomain);
+void build_faces_soa1(struct domain *theDomain);
 void freeDomain_soa1(struct domain *theDomain);
 double hash_soa1(struct domain *theDomain, int qqq);
 

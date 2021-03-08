@@ -6,3 +6,4 @@ NUM_C	 = 5	# Number of conserved variables (Hydro: 5, MHD: 8)
 NUM_N	 = 2	# Number of passive variables   (>=0)
 CT_MODE	 = 1	# CT mode 0 or 1
 TYPE	 = 0
+SUBTYPE	 = 0

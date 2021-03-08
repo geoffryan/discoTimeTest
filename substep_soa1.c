@@ -1,4 +1,5 @@
 #include "header.h"
+#include "domain_soa1.h"
 #include "geometry.h"
 #include "hydro.h"
 #include "plm_soa1.h"
@@ -11,22 +12,20 @@ void recon_soa1(struct domain *theDomain)
     plm_phi_soa1(theDomain);
     prof_tock(theDomain->prof, PROF_RECON_P);
 
-    /*
 
     if(theDomain->Nr > 1)
     {
         prof_tick(theDomain->prof, PROF_RECON_R);
-        setup_faces( theDomain , 1 );
-        int Nfr = theDomain->fIndex_r[theDomain->N_ftracks_r];
-        plm_trans_soa1(theDomain, theDomain->theFaces_1, Nfr, 1);
+        build_faces_soa1(theDomain);
+        plm_r_soa1(theDomain);
         prof_tock(theDomain->prof, PROF_RECON_R);
     }
+    /*
     if(theDomain->Nz > 1)
     {
         prof_tick(theDomain->prof, PROF_RECON_Z);
-        setup_faces( theDomain , 2 );
-        int Nfz = theDomain->fIndex_z[theDomain->N_ftracks_z];
-        plm_trans_soa1(theDomain, theDomain->theFaces_2, Nfz, 2);
+        build_faces_soa1(theDomain);
+        plm_z_soa1(theDomain);
         prof_tock(theDomain->prof, PROF_RECON_Z);
     }
     */
@@ -159,15 +158,17 @@ void flux_phi_soa1(struct domain *theDomain)
             {
                 int iR = iL < Np[jk]-1 ? iL + 1 : 0;
 
-                //riemann_phi_soa1(theDomain, jk, iL, iR, 1.0e-3,
-                //                 rm, rp, r, zm, zp, z);
-
+#if SUBTYPE == 0
+                riemann_phi_soa1(theDomain, jk, iL, iR, 1.0e-3,
+                                 rm, rp, r, zm, zp, z);
+#elif SUBTYPE == 1
                 riemann_phi_soa1_alt(theDomain->prim[jk], theDomain->cons[jk],
                                      theDomain->dphi[jk], theDomain->piph[jk],
                                      theDomain->gradr[jk], theDomain->gradp[jk],
                                      theDomain->gradz[jk],
                                      iL, iR, 1.0e-3,
                                      rm, rp, r, zm, zp, z);
+#endif
             }
         }
     }

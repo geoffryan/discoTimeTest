@@ -5,5 +5,6 @@
 
 double minmod_soa1(double a, double b, double c);
 void plm_phi_soa1(struct domain *theDomain);
+void plm_r_soa1(struct domain *theDomain);
 
 #endif

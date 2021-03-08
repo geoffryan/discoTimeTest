@@ -85,10 +85,14 @@ struct domain{
    double **dphi;
    double **piph;
 
+   int *I0;
+
+   int *Nfr;
    double **fr_dA;
    double **fr_phib;
    double **fr_phif;
 
+   int *Nfz;
    double **fz_dA;
    double **fz_phib;
    double **fz_phif;
