@@ -339,7 +339,9 @@ void build_faces_soa1(struct domain *theDomain)
 void freeDomain_soa1(struct domain *theDomain)
 {
     int jk;
-    int Nann = theDomain->Nr * theDomain->Nz;
+    int Nr = theDomain->Nr;
+    int Nz = theDomain->Nz;
+    int Nann = Nr * Nz;
 
     for(jk=0; jk<Nann; jk++)
     {
@@ -359,21 +361,36 @@ void freeDomain_soa1(struct domain *theDomain)
     free(theDomain->piph);
     free(theDomain->dphi);
 
+    free(theDomain->Np);
+    theDomain->r_jph--;
+    free(theDomain->r_jph);
+    theDomain->z_kph--;
+    free(theDomain->z_kph);
+
     free(theDomain->I0);
 
-    if(theDomain->fr_dA != NULL)
-        free(theDomain->fr_dA);
-    if(theDomain->fr_phib != NULL)
-        free(theDomain->fr_phib);
-    if(theDomain->fr_phif != NULL)
-        free(theDomain->fr_phif);
+    for(jk=0; jk<(Nr-1)*Nz; jk++)
+    {
+        free(theDomain->fr_dA[jk]);
+        free(theDomain->fr_phib[jk]);
+        free(theDomain->fr_phif[jk]);
+    }
+    free(theDomain->fr_dA);
+    free(theDomain->fr_phib);
+    free(theDomain->fr_phif);
 
-    if(theDomain->fz_dA != NULL)
-        free(theDomain->fz_dA);
-    if(theDomain->fz_phib != NULL)
-        free(theDomain->fz_phib);
-    if(theDomain->fz_phif != NULL)
-        free(theDomain->fz_phif);
+    for(jk=0; jk<Nr*(Nz-1); jk++)
+    {
+        free(theDomain->fz_dA[jk]);
+        free(theDomain->fz_phib[jk]);
+        free(theDomain->fz_phif[jk]);
+    }
+    free(theDomain->fz_dA);
+    free(theDomain->fz_phib);
+    free(theDomain->fz_phif);
+
+    free(theDomain->Nfr);
+    free(theDomain->Nfz);
 }
 
 double hash_soa1(struct domain *theDomain, int qqq)
