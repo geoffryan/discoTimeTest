@@ -278,17 +278,20 @@ void riemann_phi_aos(struct cell *cL, struct cell *cR, double dt,
     {
         primL[q] = cL->prim[q] + dphiL * cL->gradp[q];
         primR[q] = cR->prim[q] - dphiR * cR->gradp[q];
-    }
-    for(q=0; q<NUM_Q; q++)
         prim[q] = 0.5*(primL[q] + primR[q]);
+    }
 
-    double F[NUM_Q], VF[NUM_Q];
+    double FL[NUM_Q], FR[NUM_Q], F[NUM_Q], VF[NUM_Q];
     for(q=0; q<NUM_Q; q++)
         VF[q] = 0.0;
 
-    flux(prim, F, x, n, xp, xm);
+    flux(primL, FL, x, n, xp, xm);
+    flux(primR, FR, x, n, xp, xm);
     visc_flux(prim, cL->gradr, cL->gradp, cL->gradz,
               VF, x, n);
+    
+    for(q=0; q<NUM_Q; q++)
+        F[q] = 0.5*(FL[q] + FR[q]);
 
     for(q=0; q<NUM_Q; q++)
     {
@@ -315,17 +318,20 @@ void riemann_r_aos(struct face *f, double dt, double r, double zp, double zm)
                     + f->dxL * f->L->gradr[q];
         primR[q] = f->R->prim[q] + dphiR * f->R->gradp[q]
                     + f->dxR * f->R->gradr[q];
-    }
-    for(q=0; q<NUM_Q; q++)
         prim[q] = 0.5*(primL[q] + primR[q]);
+    }
 
-    double F[NUM_Q], VF[NUM_Q];
+    double FL[NUM_Q], FR[NUM_Q], F[NUM_Q], VF[NUM_Q];
     for(q=0; q<NUM_Q; q++)
         VF[q] = 0.0;
 
-    flux(prim, F, f->cm, n, xp, xm);
+    flux(primL, FL, f->cm, n, xp, xm);
+    flux(primR, FR, f->cm, n, xp, xm);
     visc_flux(prim, f->L->gradr, f->L->gradp, f->L->gradz,
               VF, f->cm, n);
+    
+    for(q=0; q<NUM_Q; q++)
+        F[q] = 0.5*(FL[q] + FR[q]);
 
     for(q=0; q<NUM_Q; q++)
     {
@@ -352,21 +358,24 @@ void riemann_z_aos(struct face *f, double dt, double rp, double rm, double z)
                     + f->dxL * f->L->gradz[q];
         primR[q] = f->R->prim[q] + dphiR * f->R->gradp[q]
                     + f->dxR * f->R->gradz[q];
-    }
-    for(q=0; q<NUM_Q; q++)
         prim[q] = 0.5*(primL[q] + primR[q]);
+    }
 
-    double F[NUM_Q], VF[NUM_Q];
+    double FL[NUM_Q], FR[NUM_Q], F[NUM_Q], VF[NUM_Q];
     for(q=0; q<NUM_Q; q++)
         VF[q] = 0.0;
 
-    flux(prim, F, f->cm, n, xp, xm);
+    flux(primL, FL, f->cm, n, xp, xm);
+    flux(primR, FR, f->cm, n, xp, xm);
     visc_flux(prim, f->L->gradr, f->L->gradp, f->L->gradz,
               VF, f->cm, n);
     
     for(q=0; q<NUM_Q; q++)
+        F[q] = 0.5*(FL[q] + FR[q]);
+    
+    for(q=0; q<NUM_Q; q++)
     {
-        f->L->cons[q] -= (F[q] + VF[q]) * 1.0e-3 * f->dA;
-        f->R->cons[q] += (F[q] + VF[q]) * 1.0e-3 * f->dA;
+        f->L->cons[q] -= (F[q] + VF[q]) * dt * f->dA;
+        f->R->cons[q] += (F[q] + VF[q]) * dt * f->dA;
     }
 }

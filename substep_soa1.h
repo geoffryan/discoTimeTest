@@ -9,6 +9,7 @@ void addSource_soa1(struct domain *theDomain);
 void calcPrim_soa1(struct domain *theDomain);
 
 void flux_phi_soa1(struct domain *theDomain);
+void flux_r_soa1(struct domain *theDomain);
 
 void riemann_phi_soa1(struct domain *theDomain, int jk, int iL, int iR,
                       double dt, double rm, double rp, double r,
@@ -19,4 +20,7 @@ void riemann_phi_soa1_alt(double *prim, double *cons, double *dphi,
                       int iL, int iR,
                       double dt, double rm, double rp, double r,
                       double zm, double zp, double z);
+void riemann_r_soa1(struct domain *theDomain, int jkL, int jkR, int jkf,
+                    int iL, int iR, int i, double dt, double rL, double rR,
+                    double r, double zm, double zp, double z);
 #endif
