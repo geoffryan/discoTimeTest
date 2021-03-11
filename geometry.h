@@ -1,5 +1,5 @@
 #ifndef DISCO_GEOMETRY_H
-#define DISCO_GEOMMETRY_H
+#define DISCO_GEOMETRY_H
 
 #include "header.h"
 

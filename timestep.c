@@ -14,6 +14,7 @@ void timestep(struct domain *theDomain)
 #endif
     prof_tock(theDomain->prof, PROF_RECON); 
 
+
     prof_tick(theDomain->prof, PROF_FLUX); 
 #if TYPE == 0
     addFlux_aos(theDomain);
@@ -21,6 +22,7 @@ void timestep(struct domain *theDomain)
     addFlux_soa1(theDomain);
 #endif
     prof_tock(theDomain->prof, PROF_FLUX); 
+   
 
     prof_tick(theDomain->prof, PROF_SOURCE); 
 #if TYPE == 0

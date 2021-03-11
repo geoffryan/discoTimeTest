@@ -8,10 +8,13 @@ runTiming () {
         sed -i "s/^SUBTYPE\s.*$/SUBTYPE = ${2}/" Makefile.in
     fi
 
-    make clean
-    make
+    echo "Compiling ${1} ${2}"
+    make -s clean
+    make -s
+    echo "Running ${1} ${2}"
     ./disco
     mv times.log times.${1}.${2}.log
+    mv grid.txt grid.${1}.${2}.txt
 }
 
 runTiming 0 0

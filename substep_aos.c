@@ -308,8 +308,8 @@ void riemann_r_aos(struct face *f, double dt, double r, double zp, double zm)
     double xp[3] = {r, f->cm[1] + 0.5*f->dphi, zp};
     double xm[3] = {r, f->cm[1] - 0.5*f->dphi, zm};
 
-    double dphiL = f->cm[1] - (f->L->piph - 0.5*f->L->dphi);
-    double dphiR = f->cm[1] - (f->R->piph - 0.5*f->R->dphi);
+    double dphiL = get_signed_dp(f->cm[1], f->L->piph - 0.5*f->L->dphi);
+    double dphiR = get_signed_dp(f->cm[1], f->R->piph - 0.5*f->R->dphi);
 
     int q;
     for(q=0; q<NUM_Q; q++)
@@ -317,7 +317,7 @@ void riemann_r_aos(struct face *f, double dt, double r, double zp, double zm)
         primL[q] = f->L->prim[q] + dphiL * f->L->gradp[q]
                     + f->dxL * f->L->gradr[q];
         primR[q] = f->R->prim[q] + dphiR * f->R->gradp[q]
-                    + f->dxR * f->R->gradr[q];
+                    - f->dxR * f->R->gradr[q];
         prim[q] = 0.5*(primL[q] + primR[q]);
     }
 
@@ -335,8 +335,8 @@ void riemann_r_aos(struct face *f, double dt, double r, double zp, double zm)
 
     for(q=0; q<NUM_Q; q++)
     {
-        f->L->cons[q] -= (F[q] + VF[q]) * dt * f->dA * dt;
-        f->R->cons[q] += (F[q] + VF[q]) * dt * f->dA * dt;
+        f->L->cons[q] -= (F[q] + VF[q]) * dt * f->dA;
+        f->R->cons[q] += (F[q] + VF[q]) * dt * f->dA;
     }
 }
                 

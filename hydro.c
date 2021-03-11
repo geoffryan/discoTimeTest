@@ -25,7 +25,7 @@ void initial(double *prim, const double *x)
     prim[PPP] = 1.0 + 0.01 * r * sin(4*phi);
     prim[URR] = r;
     prim[UZZ] = z;
-    prim[UPP] = 0.0;
+    prim[UPP] = r*cos(phi);
     if(NUM_N > 0)
         prim[NUM_C] = log(prim[PPP] * pow(prim[RHO], -gamma_law))
                          / (gamma_law - 1);

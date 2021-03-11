@@ -118,7 +118,7 @@ void calcPrim_soa1(struct domain *theDomain)
                 double phim = phip - theDomain->dphi[jk][i];
                 double xp[3] = {rp, phip, zp};
                 double xm[3] = {rm, phim, zm};
-                double x[3] = {r, 0.5*(phim+phip), z};
+                double x[3] = {r, get_centroid(phip, phim, 0), z};
 
                 double dV = get_dV(xp, xm);
 
@@ -308,6 +308,26 @@ void flux_r_soa1(struct domain *theDomain)
             double *piphL = theDomain->piph[jkL];
             double *piphR = theDomain->piph[jkR];
 
+#if SUBTYPE == 1
+            double *primL = theDomain->prim[jkL];
+            double *consL = theDomain->cons[jkL];
+            double *gradrL = theDomain->gradr[jkL];
+            double *gradpL = theDomain->gradp[jkL];
+            double *gradzL = theDomain->gradz[jkL];
+            double *dphiL = theDomain->dphi[jkL];
+            
+            double *primR = theDomain->prim[jkR];
+            double *consR = theDomain->cons[jkR];
+            double *gradrR = theDomain->gradr[jkR];
+            double *gradpR = theDomain->gradp[jkR];
+            double *gradzR = theDomain->gradz[jkR];
+            double *dphiR = theDomain->dphi[jkR];
+            
+            double *fr_dA = theDomain->fr_dA[jkf];
+            double *fr_phif = theDomain->fr_phif[jkf];
+            double *fr_phib = theDomain->fr_phib[jkf];
+#endif
+
             int i;
             int iL = theDomain->I0[jkL];
             int iR = theDomain->I0[jkR];
@@ -317,15 +337,12 @@ void flux_r_soa1(struct domain *theDomain)
                 riemann_r_soa1(theDomain, jkL, jkR, jkf, iL, iR, i,
                                  1.0e-3, rL, rR, r, zm, zp, z);
 #elif SUBTYPE == 1
-                riemann_r_soa1_alt(theDomain->prim[jkL], theDomain->prim[jkR],
-                                   theDomain->cons[jkL], theDomain->cons[jkR],
-            theDomain->gradr[jkL], theDomain->gradp[jkL], theDomain->gradz[jkL],
-            theDomain->gradr[jkR], theDomain->gradp[jkR], theDomain->gradz[jkR],
-                                   theDomain->dphi[jkL], theDomain->piph[jkL],
-                                   theDomain->dphi[jkR], theDomain->piph[jkR],
-                            theDomain->fr_dA[jkf],
-                            theDomain->fr_phif[jkf], theDomain->fr_phib[jkf],
-                                     iL, iR, i, 1.0e-3, rL, rR, r, zm, zp, z);
+                riemann_r_soa1_alt(primL, primR, consL, consR,
+                                   gradrL, gradpL, gradzL,
+                                   gradrR, gradpR, gradzR,
+                                   dphiL, piphL, dphiR, piphR,
+                                   fr_dA, fr_phif, fr_phib,
+                                   iL, iR, i, 1.0e-3, rL, rR, r, zm, zp, z);
 #endif
 
                 double dpLR = get_signed_dp(piphL[iL], piphR[iR]);

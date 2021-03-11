@@ -115,11 +115,14 @@ int main( int argc , char * argv[] )
 
     printf("HASH: %.16le\n", hash);
 
-    generate_log( &theDomain );
+    generate_log(&theDomain);
+
 #if TYPE == 0
-    freeDomain_aos( &theDomain );
+    dump_grid_aos(&theDomain);
+    freeDomain_aos(&theDomain);
 #elif TYPE == 1
-    freeDomain_soa1( &theDomain );
+    dump_grid_soa1(&theDomain);
+    freeDomain_soa1(&theDomain);
 #endif
 
     return 0;

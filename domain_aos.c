@@ -229,7 +229,12 @@ double hash_aos(struct domain *theDomain, int qqq)
                 {
                     int q;
                     for(q=0; q<NUM_Q; q++)
+                    {
                         sum += theDomain->theCells[jk][i].prim[q]; 
+                        //sum += theDomain->theCells[jk][i].gradr[q]; 
+                        //sum += theDomain->theCells[jk][i].gradp[q]; 
+                        //sum += theDomain->theCells[jk][i].gradz[q]; 
+                    }
                 }
             }
         }
@@ -237,3 +242,37 @@ double hash_aos(struct domain *theDomain, int qqq)
     return sum;
 }
 
+void dump_grid_aos(struct domain *theDomain)
+{
+    int i, j, k;
+
+    char filename[] = "grid.txt";
+    FILE *f = fopen(filename, "w");
+
+    for(k=0; k<theDomain->Nz; k++)
+        for(j=0; j<theDomain->Nr; j++)
+        {
+            int jk = j + theDomain->Nr * k;
+
+            for(i=0; i<theDomain->Np[jk]; i++)
+            {
+                fprintf(f, "%03d %03d %04d:", k, j, i);
+
+                int q;
+                for(q = 0; q < NUM_Q; q++)
+                    fprintf(f, " %.6le", theDomain->theCells[jk][i].prim[q]);
+                fprintf(f, "   %.6le", theDomain->theCells[jk][i].piph);
+                fprintf(f, "   %.6le", theDomain->theCells[jk][i].dphi);
+                fprintf(f, "\n              ");
+                for(q = 0; q < NUM_Q; q++)
+                    fprintf(f, " %.6le", theDomain->theCells[jk][i].gradr[q]);
+                fprintf(f, "\n              ");
+                for(q = 0; q < NUM_Q; q++)
+                    fprintf(f, " %.6le", theDomain->theCells[jk][i].gradp[q]);
+                fprintf(f, "\n              ");
+                for(q = 0; q < NUM_Q; q++)
+                    fprintf(f, " %.6le", theDomain->theCells[jk][i].gradz[q]);
+                fprintf(f, "\n");
+            }
+        }
+}

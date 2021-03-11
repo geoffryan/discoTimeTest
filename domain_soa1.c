@@ -99,6 +99,21 @@ void setupDomain_soa1(struct domain *theDomain)
 
         }
 
+    //reset dphi
+    for(k=0; k<Nz; k++)
+        for(j=0; j<Nr; j++)
+        {
+            int jk = Nr*k + j;
+            for( i=0 ; i<Np[jk] ; ++i )
+            {
+                int im = i == 0 ? Np[jk] - 1 : i-1;
+                double phip = theDomain->piph[jk][i];
+                double phim = theDomain->piph[jk][im];
+                theDomain->dphi[jk][i] = get_dp(phip, phim);
+            }
+
+        }
+
     // Initialize hydro data;
     for(k=0; k<Nz; k++)
     {
@@ -236,6 +251,11 @@ void build_faces_soa1(struct domain *theDomain)
             {
                 double phifL = piph[jkL][iL];
                 double phifR = piph[jkR][iR];
+                if(phifR - phifL > 0.5*phi_max)
+                    phifL += phi_max;
+                else if(phifR - phifL < -0.5*phi_max)
+                    phifR += phi_max;
+
                 double phibL = phifL - dphi[jkL][iL];
                 double phibR = phifR - dphi[jkR][iR];
                 double phif = phifL > phifR ? phifR : phifL;
@@ -251,24 +271,12 @@ void build_faces_soa1(struct domain *theDomain)
                 fr_phib[jkf][i] = phib;
                 fr_phif[jkf][i] = phif;
 
-                double dpLR = phifL - phifR;
-                while(dpLR > 0.5*phi_max)
-                    dpLR -= phi_max;
-                while(dpLR < -0.5*phi_max)
-                    dpLR += phi_max;
+                double dpLR = get_signed_dp(phifL, phifR);
 
                 if(dpLR < 0.0)
-                {
-                    iL++;
-                    if(iL == Np[jkL])
-                        iL = 0;
-                }
+                    iL = iL == Np[jkL]-1 ? 0 : iL+1;
                 else
-                {
-                    iR++;
-                    if(iR == Np[jkR])
-                        iR = 0;
-                }
+                    iR = iR == Np[jkR]-1 ? 0 : iR+1;
             }
             if(iL != I0[jkL] || iR != I0[jkR])
                 printf("Radial faces didn't finish: %d %d (%d) %d %d (%d)\n",
@@ -410,7 +418,12 @@ double hash_soa1(struct domain *theDomain, int qqq)
                 {
                     int q;
                     for(q=0; q<NUM_Q; q++)
+                    {
                         sum += theDomain->prim[jk][i*NUM_Q+q]; 
+                        //sum += theDomain->gradr[jk][i*NUM_Q+q]; 
+                        //sum += theDomain->gradp[jk][i*NUM_Q+q]; 
+                        //sum += theDomain->gradz[jk][i*NUM_Q+q]; 
+                    }
                 }
             }
         }
@@ -418,3 +431,37 @@ double hash_soa1(struct domain *theDomain, int qqq)
     return sum;
 }
 
+void dump_grid_soa1(struct domain *theDomain)
+{
+    int i, j, k;
+
+    char filename[] = "grid.txt";
+    FILE *f = fopen(filename, "w");
+
+    for(k=0; k<theDomain->Nz; k++)
+        for(j=0; j<theDomain->Nr; j++)
+        {
+            int jk = j + theDomain->Nr * k;
+
+            for(i=0; i<theDomain->Np[jk]; i++)
+            {
+                fprintf(f, "%03d %03d %04d:", k, j, i);
+
+                int q;
+                for(q = 0; q < NUM_Q; q++)
+                    fprintf(f, " %.6le", theDomain->prim[jk][i*NUM_Q+q]);
+                fprintf(f, "   %.6le", theDomain->piph[jk][i]);
+                fprintf(f, "   %.6le", theDomain->dphi[jk][i]);
+                fprintf(f, "\n              ");
+                for(q = 0; q < NUM_Q; q++)
+                    fprintf(f, " %.6le", theDomain->gradr[jk][i*NUM_Q+q]);
+                fprintf(f, "\n              ");
+                for(q = 0; q < NUM_Q; q++)
+                    fprintf(f, " %.6le", theDomain->gradp[jk][i*NUM_Q+q]);
+                fprintf(f, "\n              ");
+                for(q = 0; q < NUM_Q; q++)
+                    fprintf(f, " %.6le", theDomain->gradz[jk][i*NUM_Q+q]);
+                fprintf(f, "\n");
+            }
+        }
+}

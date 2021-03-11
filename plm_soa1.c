@@ -121,9 +121,9 @@ void plm_r_soa1(struct domain *theDomain)
 
             for( i=0 ; i<Nfr[jkf] ; ++i )
             {
-                double dpL = get_signed_dp(0.5*(fr_phif[i]-fr_phib[i]), 
+                double dpL = get_signed_dp(0.5*(fr_phif[i]+fr_phib[i]), 
                                            piphL[iL] - 0.5*dphiL[iL]);
-                double dpR = get_signed_dp(0.5*(fr_phif[i]-fr_phib[i]), 
+                double dpR = get_signed_dp(0.5*(fr_phif[i]+fr_phib[i]), 
                                            piphR[iR] - 0.5*dphiR[iR]);
 
                 for( q=0 ; q<NUM_Q ; ++q )
@@ -171,7 +171,13 @@ void plm_r_soa1(struct domain *theDomain)
                 xp[0] = rm;
                 xm[0] = rm;
                 double dAm = get_dA(xp, xm, 1);
-                double idAtot = 1.0/(dAp + dAm);
+                double idAtot;
+                if(j == 0)
+                    idAtot = 1.0/dAp;
+                else if(j == Nr-1)
+                    idAtot = 1.0/dAm;
+                else
+                    idAtot = 1.0/(dAp + dAm);
 
                 for(q=0; q<NUM_Q; q++)
                     gradr[NUM_Q*i+q] *= idAtot;
@@ -211,9 +217,9 @@ void plm_r_soa1(struct domain *theDomain)
 
             for( i=0 ; i<Nfr[jkf] ; ++i )
             {
-                double dpL = get_signed_dp(0.5*(fr_phif[i]-fr_phib[i]), 
+                double dpL = get_signed_dp(0.5*(fr_phif[i]+fr_phib[i]), 
                                            piphL[iL] - 0.5*dphiL[iL]);
-                double dpR = get_signed_dp(0.5*(fr_phif[i]-fr_phib[i]), 
+                double dpR = get_signed_dp(0.5*(fr_phif[i]+fr_phib[i]), 
                                            piphR[iR] - 0.5*dphiR[iR]);
 
                 for( q=0 ; q<NUM_Q ; ++q )
@@ -227,6 +233,7 @@ void plm_r_soa1(struct domain *theDomain)
                         gradrL[NUM_Q*iL+q] = 0.0;
                     else if(fabs(PLM*gr) < fabs(grL))
                         gradrL[NUM_Q*iL+q] = PLM*gr;
+
                     if(gr*grR < 0.0)
                         gradrR[NUM_Q*iR+q] = 0.0;
                     else if(fabs(PLM*gr) < fabs(grR))
