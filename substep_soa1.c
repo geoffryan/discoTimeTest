@@ -317,14 +317,15 @@ void flux_r_soa1(struct domain *theDomain)
                 riemann_r_soa1(theDomain, jkL, jkR, jkf, iL, iR, i,
                                  1.0e-3, rL, rR, r, zm, zp, z);
 #elif SUBTYPE == 1
-                /*
-                riemann_phi_soa1_alt(theDomain->prim[jk], theDomain->cons[jk],
-                                     theDomain->dphi[jk], theDomain->piph[jk],
-                                     theDomain->gradr[jk], theDomain->gradp[jk],
-                                     theDomain->gradz[jk],
-                                     iL, iR, 1.0e-3,
-                                     rm, rp, r, zm, zp, z);
-                */
+                riemann_r_soa1_alt(theDomain->prim[jkL], theDomain->prim[jkR],
+                                   theDomain->cons[jkL], theDomain->cons[jkR],
+            theDomain->gradr[jkL], theDomain->gradp[jkL], theDomain->gradz[jkL],
+            theDomain->gradr[jkR], theDomain->gradp[jkR], theDomain->gradz[jkR],
+                                   theDomain->dphi[jkL], theDomain->piph[jkL],
+                                   theDomain->dphi[jkR], theDomain->piph[jkR],
+                            theDomain->fr_dA[jkf],
+                            theDomain->fr_phif[jkf], theDomain->fr_phib[jkf],
+                                     iL, iR, i, 1.0e-3, rL, rR, r, zm, zp, z);
 #endif
 
                 double dpLR = get_signed_dp(piphL[iL], piphR[iR]);
@@ -393,5 +394,64 @@ void riemann_r_soa1(struct domain *theDomain, int jkL, int jkR, int jkf,
     {
         theDomain->cons[jkL][iqL+q] -= (F[q] + VF[q]) * dt * dA;
         theDomain->cons[jkR][iqR+q] += (F[q] + VF[q]) * dt * dA;
+    }
+}
+
+void riemann_r_soa1_alt(double *primL, double *primR,
+                        double *consL, double *consR,
+                        double *gradrL, double *gradpL, double *gradzL,
+                        double *gradrR, double *gradpR, double *gradzR,
+                        double *dphiL, double *piphL,
+                        double *dphiR, double *piphR,
+                        double *fr_dA, double *fr_phif, double *fr_phib,
+                        int iL, int iR, int i, double dt, double rL, double rR,
+                        double r, double zm, double zp, double z)
+{
+    double xp[3] = {r, fr_phif[i], zp};
+    double xm[3] = {r, fr_phib[i], zm};
+    double dA = fr_dA[i];
+
+    double pL[NUM_Q];
+    double pR[NUM_Q];
+    double prim[NUM_Q];
+
+    double phiF = 0.5*(xp[1] + xm[1]);
+    double phiL = piphL[iL] - 0.5*dphiL[iL];
+    double phiR = piphR[iR] - 0.5*dphiR[iR];
+
+    double dpL = get_signed_dp(phiF, phiL);
+    double dpR = get_signed_dp(phiF, phiR);
+    double drL = r - rL;
+    double drR = r - rR;
+    double x[3] = {r, phiF, z};
+    
+    double n[3] = {1.0, 0.0, 0.0};
+
+    int iqL = NUM_Q * iL;
+    int iqR = NUM_Q * iR;
+
+    int q;
+    for(q=0; q<NUM_Q; q++)
+    {
+        pL[q] = primL[iqL+q] + dpL * gradpL[iqL+q] + drL * gradrL[iqL+q];
+        pR[q] = primR[iqR+q] + dpR * gradpR[iqR+q] + drR * gradrR[iqR+q];
+        prim[q] = 0.5*(pL[q] + pR[q]);
+    }
+
+    double FL[NUM_Q], FR[NUM_Q], F[NUM_Q], VF[NUM_Q];
+    for(q=0; q<NUM_Q; q++)
+        VF[q] = 0.0;
+
+    flux(pL, FL, x, n, xp, xm);
+    flux(pR, FR, x, n, xp, xm);
+    for(q=0; q<NUM_Q; q++)
+        F[q] = 0.5*(FL[q] + FR[q]);
+    
+    visc_flux(prim, gradrL+iqL, gradpL+iqL, gradzL+iqL, VF, x, n);
+
+    for(q=0; q<NUM_Q; q++)
+    {
+        consL[iqL+q] -= (F[q] + VF[q]) * dt * dA;
+        consR[iqR+q] += (F[q] + VF[q]) * dt * dA;
     }
 }

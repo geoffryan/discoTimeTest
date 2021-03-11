@@ -23,4 +23,13 @@ void riemann_phi_soa1_alt(double *prim, double *cons, double *dphi,
 void riemann_r_soa1(struct domain *theDomain, int jkL, int jkR, int jkf,
                     int iL, int iR, int i, double dt, double rL, double rR,
                     double r, double zm, double zp, double z);
+void riemann_r_soa1_alt(double *primL, double *primR,
+                        double *consL, double *consR,
+                        double *gradrL, double *gradpL, double *gradzL,
+                        double *gradrR, double *gradpR, double *gradzR,
+                        double *dphiL, double *piphL,
+                        double *dphiR, double *piphR,
+                        double *fr_dA, double *fr_phif, double *fr_phib,
+                        int iL, int iR, int i, double dt, double rL, double rR,
+                        double r, double zm, double zp, double z);
 #endif
