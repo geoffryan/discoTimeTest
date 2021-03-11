@@ -118,10 +118,10 @@ int main( int argc , char * argv[] )
     generate_log(&theDomain);
 
 #if TYPE == 0
-    dump_grid_aos(&theDomain);
+    //dump_grid_aos(&theDomain);
     freeDomain_aos(&theDomain);
 #elif TYPE == 1
-    dump_grid_soa1(&theDomain);
+    //dump_grid_soa1(&theDomain);
     freeDomain_soa1(&theDomain);
 #endif
 
