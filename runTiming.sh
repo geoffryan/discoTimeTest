@@ -12,7 +12,7 @@ runTiming () {
     make -s clean
     make -s
     echo "Running ${1} ${2}"
-    ./disco
+    ./disco > out.${1}.${2}.txt
     mv times.log times.${1}.${2}.log
     mv grid.txt grid.${1}.${2}.txt
 }
