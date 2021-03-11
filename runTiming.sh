@@ -13,6 +13,7 @@ runTiming () {
     make -s
     echo "Running ${1} ${2}"
     ./disco > out.${1}.${2}.txt
+    grep "Profiler total:" times.log
     mv times.log times.${1}.${2}.log
     mv grid.txt grid.${1}.${2}.txt
 }
