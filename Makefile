@@ -18,8 +18,8 @@ OPT_DEFS += -DSUBTYPE=$(SUBTYPE)
 
 FLAGS = -O3 -Wall -g $(OPT_DEFS) $(DIR_DEFS)
 
-INC = -I$(H55)/include
-LIB = -L$(H55)/lib -lhdf5 -lm
+INC = 
+LIB = -lm
 
 OBJ = main.o readpar.o faces.o grid.o profiler.o geometry.o geometry_functions.o hydro.o timestep.o domain_aos.o substep_aos.o plm_aos.o domain_soa1.o substep_soa1.o plm_soa1.o
 

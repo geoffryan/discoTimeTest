@@ -1,4 +1,4 @@
-Num_R       100
+Num_R       512
 Num_Z       1
 nsteps      10
 R_Min       0.1
