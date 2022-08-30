@@ -20,7 +20,7 @@ void initial(double *prim, const double *x)
     int q;
     double r = x[0];
     double phi = x[1];
-    double z = x[3];
+    double z = x[2];
     prim[RHO] = 1.0;
     prim[PPP] = 1.0 + 0.01 * r * sin(4*phi);
     prim[URR] = r;

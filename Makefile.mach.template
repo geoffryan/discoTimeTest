@@ -6,5 +6,5 @@
 CC = gcc
 
 #Extra compiling/linking flags
-LOCAL_CFLAGS = 
-LOCAL_LDFLAGS = 
+LOCAL_CFLAGS = -O2
+LOCAL_LDFLAGS = -O2

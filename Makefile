@@ -16,7 +16,7 @@ OPT_DEFS += -DCT_MODE=$(CT_MODE)
 OPT_DEFS += -DTYPE=$(TYPE)
 OPT_DEFS += -DSUBTYPE=$(SUBTYPE)
 
-FLAGS = -O3 -Wall -g $(OPT_DEFS) $(DIR_DEFS)
+FLAGS = -Wall -g $(OPT_DEFS) $(DIR_DEFS)
 
 INC = 
 LIB = -lm

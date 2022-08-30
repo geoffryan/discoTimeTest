@@ -66,6 +66,17 @@ int read_par_file(struct domain * theDomain)
         return err;
     }
 
+    printf("Pars\n");
+    printf("Num_R  %d\n", theList->Num_R);
+    printf("Num_Z  %d\n", theList->Num_Z);
+    printf("nsteps %d\n", theList->nsteps);
+    printf("rmin   %lf\n", theList->rmin);
+    printf("rmax   %lf\n", theList->rmax);
+    printf("zmin   %lf\n", theList->zmin);
+    printf("zmax   %lf\n", theList->zmax);
+    printf("phimax %lf\n", theList->phimax);
+    printf("dt     %lf\n", theList->dt);
+
     return 0;
 }
 
