@@ -47,6 +47,7 @@ struct param_list{
    double rmin, rmax;
    double zmin, zmax;
    double phimax;
+   double dt;
 };
 
 struct domain{ 

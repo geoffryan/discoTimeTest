@@ -56,6 +56,7 @@ int read_par_file(struct domain * theDomain)
     err += readvar(pfile, "Z_Min",   VAR_DOUB, &(theList->zmin));
     err += readvar(pfile, "Z_Max",   VAR_DOUB, &(theList->zmax));
     err += readvar(pfile, "Phi_Max", VAR_DOUB, &(theList->phimax));
+    err += readvar(pfile, "dt", VAR_DOUB, &(theList->dt));
 
     theList->phimax *= 2*M_PI;
 

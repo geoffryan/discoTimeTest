@@ -31,17 +31,17 @@ void recon_soa1(struct domain *theDomain)
     */
 }
 
-void addFlux_soa1(struct domain *theDomain)
+void addFlux_soa1(struct domain *theDomain, double dt)
 {
     prof_tick(theDomain->prof, PROF_FLUX_P);
-    flux_phi_soa1(theDomain);
+    flux_phi_soa1(theDomain, dt);
     prof_tock(theDomain->prof, PROF_FLUX_P);
     prof_tick(theDomain->prof, PROF_FLUX_R);
-    flux_r_soa1(theDomain);
+    flux_r_soa1(theDomain, dt);
     prof_tock(theDomain->prof, PROF_FLUX_R);
 }
 
-void addSource_soa1(struct domain *theDomain)
+void addSource_soa1(struct domain *theDomain, double dt)
 {
     int Nr = theDomain->Nr;
     int Nz = theDomain->Nz;
@@ -79,9 +79,9 @@ void addSource_soa1(struct domain *theDomain)
                 double *gradp = theDomain->gradp[jk] + iq;
                 double *gradz = theDomain->gradz[jk] + iq;
 
-                source(prim, cons, xp, xm, 1.0e-6 * dV);
+                source(prim, cons, xp, xm, dt * dV);
                 visc_source(prim, gradr, gradp, gradz, cons,
-                            xp, xm, 1.0e-6 * dV);
+                            xp, xm, dt * dV);
             }
         }
     }
@@ -132,7 +132,7 @@ void calcPrim_soa1(struct domain *theDomain)
     }
 }
 
-void flux_phi_soa1(struct domain *theDomain)
+void flux_phi_soa1(struct domain *theDomain, double dt)
 {
     int Nr = theDomain->Nr;
     int Nz = theDomain->Nz;
@@ -162,14 +162,14 @@ void flux_phi_soa1(struct domain *theDomain)
                 int iR = iL < Np[jk]-1 ? iL + 1 : 0;
 
 #if SUBTYPE == 0
-                riemann_phi_soa1(theDomain, jk, iL, iR, 1.0e-6,
+                riemann_phi_soa1(theDomain, jk, iL, iR, dt,
                                  rm, rp, r, zm, zp, z);
 #elif SUBTYPE == 1
                 riemann_phi_soa1_alt(theDomain->prim[jk], theDomain->cons[jk],
                                      theDomain->dphi[jk], theDomain->piph[jk],
                                      theDomain->gradr[jk], theDomain->gradp[jk],
                                      theDomain->gradz[jk],
-                                     iL, iR, 1.0e-6,
+                                     iL, iR, dt,
                                      rm, rp, r, zm, zp, z);
 #endif
             }
@@ -275,7 +275,7 @@ void riemann_phi_soa1_alt(const double *prim, double *cons,
     }
 }
 
-void flux_r_soa1(struct domain *theDomain)
+void flux_r_soa1(struct domain *theDomain, double dt)
 {
     int Nr = theDomain->Nr;
     int Nz = theDomain->Nz;
@@ -336,14 +336,14 @@ void flux_r_soa1(struct domain *theDomain)
             {
 #if SUBTYPE == 0
                 riemann_r_soa1(theDomain, jkL, jkR, jkf, iL, iR, i,
-                                 1.0e-6, rL, rR, r, zm, zp, z);
+                                 dt, rL, rR, r, zm, zp, z);
 #elif SUBTYPE == 1
                 riemann_r_soa1_alt(primL, primR, consL, consR,
                                    gradrL, gradpL, gradzL,
                                    gradrR, gradpR, gradzR,
                                    dphiL, piphL, dphiR, piphR,
                                    fr_dA, fr_phif, fr_phib,
-                                   iL, iR, i, 1.0e-6, rL, rR, r, zm, zp, z);
+                                   iL, iR, i, dt, rL, rR, r, zm, zp, z);
 #endif
 
                 double dpLR = get_signed_dp(piphL[iL], piphR[iR]);

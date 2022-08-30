@@ -6,3 +6,4 @@ R_Max       1.0
 Z_Min       -0.5
 Z_Max       0.5
 Phi_Max     1.0
+dt          1.0e-3

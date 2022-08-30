@@ -32,27 +32,27 @@ void recon_aos(struct domain *theDomain)
     }
 }
 
-void addFlux_aos(struct domain *theDomain)
+void addFlux_aos(struct domain *theDomain, double dt)
 {
     prof_tick(theDomain->prof, PROF_FLUX_P);
-    flux_phi_aos(theDomain);
+    flux_phi_aos(theDomain, dt);
     prof_tock(theDomain->prof, PROF_FLUX_P);
 
     if(theDomain->Nr > 1)
     {
         prof_tick(theDomain->prof, PROF_FLUX_R);
-        flux_r_aos(theDomain);
+        flux_r_aos(theDomain, dt);
         prof_tock(theDomain->prof, PROF_FLUX_R);
     }
     if(theDomain->Nz > 1)
     {
         prof_tick(theDomain->prof, PROF_FLUX_Z);
-        flux_z_aos(theDomain);
+        flux_z_aos(theDomain, dt);
         prof_tock(theDomain->prof, PROF_FLUX_Z);
     }
 }
 
-void addSource_aos(struct domain *theDomain)
+void addSource_aos(struct domain *theDomain, double dt)
 {
     int Nr = theDomain->Nr;
     int Nz = theDomain->Nz;
@@ -84,9 +84,9 @@ void addSource_aos(struct domain *theDomain)
                 double xm[3] = {rm, phim, zm};
                 double dV = get_dV(xp, xm);
 
-                source(c->prim, c->cons, xp, xm, 1.0e-6 * dV);
+                source(c->prim, c->cons, xp, xm, dt * dV);
                 visc_source(c->prim, c->gradr, c->gradp, c->gradz, c->cons,
-                            xp, xm, 1.0e-6 * dV);
+                            xp, xm, dt * dV);
             }
         }
     }
@@ -135,7 +135,7 @@ void calcPrim_aos(struct domain *theDomain)
 }
 
 
-void flux_phi_aos(struct domain *theDomain)
+void flux_phi_aos(struct domain *theDomain, double dt)
 {
     int Nr = theDomain->Nr;
     int Nz = theDomain->Nz;
@@ -167,13 +167,13 @@ void flux_phi_aos(struct domain *theDomain)
                 struct cell *cL = &(theDomain->theCells[jk][iL]);
                 struct cell *cR = &(theDomain->theCells[jk][iR]);
 
-                riemann_phi_aos(cL, cR, 1.0e-6, rm, rp, r, zm, zp, z);
+                riemann_phi_aos(cL, cR, dt, rm, rp, r, zm, zp, z);
             }
         }
     }
 }
 
-void flux_r_aos(struct domain *theDomain)
+void flux_r_aos(struct domain *theDomain, double dt)
 {
     int Nr = theDomain->Nr;
     int Nz = theDomain->Nz;
@@ -209,11 +209,11 @@ void flux_r_aos(struct domain *theDomain)
             int JK = j + Nfr*k;
             int f;
             for(f=fI[JK]; f<fI[JK+1]; f++)
-                riemann_r_aos(theFaces + f, 1.0e-6, r, zp, zm);
+                riemann_r_aos(theFaces + f, dt, r, zp, zm);
         }
     }
 }
-void flux_z_aos(struct domain *theDomain)
+void flux_z_aos(struct domain *theDomain, double dt)
 {
     int Nr = theDomain->Nr;
     int Nz = theDomain->Nz;
@@ -250,7 +250,7 @@ void flux_z_aos(struct domain *theDomain)
             int JK = j + Nfr*k;
             int f;
             for(f=fI[JK]; f<fI[JK+1]; f++)
-                riemann_z_aos(theFaces + f, 1.0e-6, rp, rm, z);
+                riemann_z_aos(theFaces + f, dt, rp, rm, z);
         }
     }
 }

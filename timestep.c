@@ -12,23 +12,25 @@ void timestep(struct domain *theDomain)
 #elif TYPE == 1
     recon_soa1(theDomain);
 #endif
-    prof_tock(theDomain->prof, PROF_RECON); 
+    prof_tock(theDomain->prof, PROF_RECON);
+
+    double dt = theDomain->theParList.dt;
 
 
     prof_tick(theDomain->prof, PROF_FLUX); 
 #if TYPE == 0
-    addFlux_aos(theDomain);
+    addFlux_aos(theDomain, dt);
 #elif TYPE == 1
-    addFlux_soa1(theDomain);
+    addFlux_soa1(theDomain, dt);
 #endif
     prof_tock(theDomain->prof, PROF_FLUX); 
    
 
     prof_tick(theDomain->prof, PROF_SOURCE); 
 #if TYPE == 0
-    addSource_aos(theDomain);
+    addSource_aos(theDomain, dt);
 #elif TYPE == 1
-    addSource_soa1(theDomain);
+    addSource_soa1(theDomain, dt);
 #endif
     prof_tock(theDomain->prof, PROF_SOURCE); 
 

@@ -4,12 +4,12 @@
 #include "header.h"
 
 void recon_aos(struct domain *theDomain);
-void addFlux_aos(struct domain *theDomain);
-void addSource_aos(struct domain *theDomain);
+void addFlux_aos(struct domain *theDomain, double dt);
+void addSource_aos(struct domain *theDomain, double dt);
 void calcPrim_aos(struct domain *theDomain);
-void flux_phi_aos(struct domain *theDomain);
-void flux_r_aos(struct domain *theDomain);
-void flux_z_aos(struct domain *theDomain);
+void flux_phi_aos(struct domain *theDomain, double dt);
+void flux_r_aos(struct domain *theDomain, double dt);
+void flux_z_aos(struct domain *theDomain, double dt);
 void riemann_phi_aos(struct cell *cL, struct cell *cR, double dt,
                      double rm, double rp, double r, double zm, double zp,
                      double z);
