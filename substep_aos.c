@@ -84,9 +84,9 @@ void addSource_aos(struct domain *theDomain)
                 double xm[3] = {rm, phim, zm};
                 double dV = get_dV(xp, xm);
 
-                source(c->prim, c->cons, xp, xm, 1.0e-3 * dV);
+                source(c->prim, c->cons, xp, xm, 1.0e-6 * dV);
                 visc_source(c->prim, c->gradr, c->gradp, c->gradz, c->cons,
-                            xp, xm, 1.0e-3 * dV);
+                            xp, xm, 1.0e-6 * dV);
             }
         }
     }
@@ -167,7 +167,7 @@ void flux_phi_aos(struct domain *theDomain)
                 struct cell *cL = &(theDomain->theCells[jk][iL]);
                 struct cell *cR = &(theDomain->theCells[jk][iR]);
 
-                riemann_phi_aos(cL, cR, 1.0e-3, rm, rp, r, zm, zp, z);
+                riemann_phi_aos(cL, cR, 1.0e-6, rm, rp, r, zm, zp, z);
             }
         }
     }
@@ -209,7 +209,7 @@ void flux_r_aos(struct domain *theDomain)
             int JK = j + Nfr*k;
             int f;
             for(f=fI[JK]; f<fI[JK+1]; f++)
-                riemann_r_aos(theFaces + f, 1.0e-3, r, zp, zm);
+                riemann_r_aos(theFaces + f, 1.0e-6, r, zp, zm);
         }
     }
 }
@@ -250,7 +250,7 @@ void flux_z_aos(struct domain *theDomain)
             int JK = j + Nfr*k;
             int f;
             for(f=fI[JK]; f<fI[JK+1]; f++)
-                riemann_z_aos(theFaces + f, 1.0e-3, rp, rm, z);
+                riemann_z_aos(theFaces + f, 1.0e-6, rp, rm, z);
         }
     }
 }

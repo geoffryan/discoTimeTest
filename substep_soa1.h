@@ -14,22 +14,26 @@ void flux_r_soa1(struct domain *theDomain);
 void riemann_phi_soa1(struct domain *theDomain, int jk, int iL, int iR,
                       double dt, double rm, double rp, double r,
                       double zm, double zp, double z);
-void riemann_phi_soa1_alt(double *prim, double *cons, double *dphi,
-                      double *piph,
-                      double *gradr, double *gradp, double *gradz,
-                      int iL, int iR,
-                      double dt, double rm, double rp, double r,
-                      double zm, double zp, double z);
+void riemann_phi_soa1_alt(const double *prim, double *cons,
+                          const double *dphi, const double *piph,
+                          const double *gradr, const double *gradp,
+                          const double *gradz,
+                          int iL, int iR,
+                          double dt, double rm, double rp, double r,
+                          double zm, double zp, double z);
 void riemann_r_soa1(struct domain *theDomain, int jkL, int jkR, int jkf,
                     int iL, int iR, int i, double dt, double rL, double rR,
                     double r, double zm, double zp, double z);
-void riemann_r_soa1_alt(double *primL, double *primR,
+void riemann_r_soa1_alt(const double *primL, const double *primR,
                         double *consL, double *consR,
-                        double *gradrL, double *gradpL, double *gradzL,
-                        double *gradrR, double *gradpR, double *gradzR,
-                        double *dphiL, double *piphL,
-                        double *dphiR, double *piphR,
-                        double *fr_dA, double *fr_phif, double *fr_phib,
+                        const double *gradrL, const double *gradpL,
+                        const double *gradzL,
+                        const double *gradrR, const double *gradpR,
+                        const double *gradzR,
+                        const double *dphiL, const double *piphL,
+                        const double *dphiR, const double *piphR,
+                        const double *fr_dA, const double *fr_phif,
+                        const double *fr_phib,
                         int iL, int iR, int i, double dt, double rL, double rR,
                         double r, double zm, double zp, double z);
 #endif
