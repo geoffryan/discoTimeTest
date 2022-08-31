@@ -2,6 +2,7 @@
 #include "profiler.h"
 #include "substep_aos.h"
 #include "substep_soa1.h"
+#include "substep_soa2.h"
 #include "timestep.h"
 
 void timestep(struct domain *theDomain)
@@ -11,6 +12,8 @@ void timestep(struct domain *theDomain)
     recon_aos(theDomain);
 #elif TYPE == 1
     recon_soa1(theDomain);
+#elif TYPE == 2
+    recon_soa2(theDomain);
 #endif
     prof_tock(theDomain->prof, PROF_RECON);
 
@@ -22,6 +25,8 @@ void timestep(struct domain *theDomain)
     addFlux_aos(theDomain, dt);
 #elif TYPE == 1
     addFlux_soa1(theDomain, dt);
+#elif TYPE == 2
+    addFlux_soa2(theDomain, dt);
 #endif
     prof_tock(theDomain->prof, PROF_FLUX); 
    
@@ -31,6 +36,8 @@ void timestep(struct domain *theDomain)
     addSource_aos(theDomain, dt);
 #elif TYPE == 1
     addSource_soa1(theDomain, dt);
+#elif TYPE == 2
+    addSource_soa2(theDomain, dt);
 #endif
     prof_tock(theDomain->prof, PROF_SOURCE); 
 
@@ -39,6 +46,8 @@ void timestep(struct domain *theDomain)
     calcPrim_aos(theDomain);
 #elif TYPE == 1
     calcPrim_soa1(theDomain);
+#elif TYPE == 2
+    calcPrim_soa2(theDomain);
 #endif
     prof_tock(theDomain->prof, PROF_C2P); 
 

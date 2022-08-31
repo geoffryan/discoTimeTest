@@ -3,6 +3,7 @@
 #include "grid.h"
 #include "domain_aos.h"
 #include "domain_soa1.h"
+#include "domain_soa2.h"
 #include "profiler.h"
 #include "timestep.h"
 
@@ -22,6 +23,8 @@ int main( int argc , char * argv[] )
     setupDomain_aos( &theDomain );
 #elif TYPE == 1
     setupDomain_soa1( &theDomain );
+#elif TYPE == 2
+    setupDomain_soa2( &theDomain );
 #endif
 
     double hash = 0.0;
@@ -59,6 +62,23 @@ int main( int argc , char * argv[] )
     hash = hash_soa1(&theDomain, 6);
     printf("HASH6: %.16le\n", hash);
     hash = hash_soa1(&theDomain, -1);
+    printf("HASH: %.16le\n", hash);
+#elif TYPE == 2
+    hash = hash_soa2(&theDomain, 0);
+    printf("HASH0: %.16le\n", hash);
+    hash = hash_soa2(&theDomain, 1);
+    printf("HASH1: %.16le\n", hash);
+    hash = hash_soa2(&theDomain, 2);
+    printf("HASH2: %.16le\n", hash);
+    hash = hash_soa2(&theDomain, 3);
+    printf("HASH3: %.16le\n", hash);
+    hash = hash_soa2(&theDomain, 4);
+    printf("HASH4: %.16le\n", hash);
+    hash = hash_soa2(&theDomain, 5);
+    printf("HASH5: %.16le\n", hash);
+    hash = hash_soa2(&theDomain, 6);
+    printf("HASH6: %.16le\n", hash);
+    hash = hash_soa2(&theDomain, -1);
     printf("HASH: %.16le\n", hash);
 #endif
     
@@ -111,6 +131,23 @@ int main( int argc , char * argv[] )
     printf("HASH6: %.16le\n", hash);
     hash = hash_soa1(&theDomain, -1);
     printf("HASH: %.16le\n", hash);
+#elif TYPE == 2
+    hash = hash_soa2(&theDomain, 0);
+    printf("HASH0: %.16le\n", hash);
+    hash = hash_soa2(&theDomain, 1);
+    printf("HASH1: %.16le\n", hash);
+    hash = hash_soa2(&theDomain, 2);
+    printf("HASH2: %.16le\n", hash);
+    hash = hash_soa2(&theDomain, 3);
+    printf("HASH3: %.16le\n", hash);
+    hash = hash_soa2(&theDomain, 4);
+    printf("HASH4: %.16le\n", hash);
+    hash = hash_soa2(&theDomain, 5);
+    printf("HASH5: %.16le\n", hash);
+    hash = hash_soa2(&theDomain, 6);
+    printf("HASH6: %.16le\n", hash);
+    hash = hash_soa2(&theDomain, -1);
+    printf("HASH: %.16le\n", hash);
 #endif
 
     printf("HASH: %.16le\n", hash);
@@ -123,6 +160,9 @@ int main( int argc , char * argv[] )
 #elif TYPE == 1
     //dump_grid_soa1(&theDomain);
     freeDomain_soa1(&theDomain);
+#elif TYPE == 2
+    //dump_grid_soa2(&theDomain);
+    freeDomain_soa2(&theDomain);
 #endif
 
     return 0;

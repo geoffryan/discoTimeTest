@@ -97,6 +97,31 @@ struct domain{
    double **fz_dA;
    double **fz_phib;
    double **fz_phif;
+
+   //SOA2 setup
+   int **fr_iL;
+   double **fr_dA_L;
+   double **fr_phib_L;
+   double **fr_phif_L;
+   double **fr_dphiL;
+
+   int **fr_iR;
+   double **fr_dA_R;
+   double **fr_phib_R;
+   double **fr_phif_R;
+   double **fr_dphiR;
+   
+   int **fz_iL;
+   double **fz_dA_L;
+   double **fz_phib_L;
+   double **fz_phif_L;
+   double **fz_dphiL;
+
+   int **fz_iR;
+   double **fz_dA_R;
+   double **fz_phib_R;
+   double **fz_phif_R;
+   double **fz_dphiR;
 };
 
 struct cell{
