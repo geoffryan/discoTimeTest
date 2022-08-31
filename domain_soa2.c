@@ -48,7 +48,6 @@ void setupDomain_soa2(struct domain *theDomain)
     theDomain->fr_iL = (int **)malloc(Nr*Nz*sizeof(int *));
     theDomain->fr_dA_L = (double **)malloc(Nr*Nz*sizeof(double *));
     theDomain->fr_phib_L = (double **)malloc(Nr*Nz*sizeof(double *));
-    theDomain->fr_phif_L = (double **)malloc(Nr*Nz*sizeof(double *));
     theDomain->fr_dphiL = (double **)malloc(Nr*Nz*sizeof(double *));
     for(k=0; k<Nz; k++)
     {
@@ -56,7 +55,6 @@ void setupDomain_soa2(struct domain *theDomain)
         theDomain->fr_iL[jk] = NULL;
         theDomain->fr_dA_L[jk] = NULL;
         theDomain->fr_phib_L[jk] = NULL;
-        theDomain->fr_phif_L[jk] = NULL;
         theDomain->fr_dphiL[jk] = NULL;
 
         for(j=1; j < Nr; j++)
@@ -66,15 +64,12 @@ void setupDomain_soa2(struct domain *theDomain)
             theDomain->fr_dA_L[jk] = (double *)malloc(Np[jk] * sizeof(double));
             theDomain->fr_phib_L[jk] = (double *)malloc(Np[jk]
                                                         * sizeof(double));
-            theDomain->fr_phif_L[jk] = (double *)malloc(Np[jk]
-                                                        * sizeof(double));
             theDomain->fr_dphiL[jk] = (double *)malloc(Np[jk] * sizeof(double));
         }
     }
     theDomain->fr_iR = (int **)malloc(Nr*Nz*sizeof(int *));
     theDomain->fr_dA_R = (double **)malloc(Nr*Nz*sizeof(double *));
     theDomain->fr_phib_R = (double **)malloc(Nr*Nz*sizeof(double *));
-    theDomain->fr_phif_R = (double **)malloc(Nr*Nz*sizeof(double *));
     theDomain->fr_dphiR = (double **)malloc(Nr*Nz*sizeof(double *));
     for(k=0; k<Nz; k++)
     {
@@ -82,7 +77,6 @@ void setupDomain_soa2(struct domain *theDomain)
         theDomain->fr_iR[jk] = NULL;
         theDomain->fr_dA_R[jk] = NULL;
         theDomain->fr_phib_R[jk] = NULL;
-        theDomain->fr_phif_R[jk] = NULL;
         theDomain->fr_dphiR[jk] = NULL;
 
         for(j=0; j < Nr-1; j++)
@@ -92,8 +86,6 @@ void setupDomain_soa2(struct domain *theDomain)
             theDomain->fr_dA_R[jk] = (double *)malloc(Np[jk] * sizeof(double));
             theDomain->fr_phib_R[jk] = (double *)malloc(Np[jk]
                                                         * sizeof(double));
-            theDomain->fr_phif_R[jk] = (double *)malloc(Np[jk]
-                                                        * sizeof(double));
             theDomain->fr_dphiR[jk] = (double *)malloc(Np[jk] * sizeof(double));
         }
     }
@@ -101,7 +93,6 @@ void setupDomain_soa2(struct domain *theDomain)
     theDomain->fz_iL = (int **)malloc(Nr*Nz*sizeof(int *));
     theDomain->fz_dA_L = (double **)malloc(Nr*Nz*sizeof(double *));
     theDomain->fz_phib_L = (double **)malloc(Nr*Nz*sizeof(double *));
-    theDomain->fz_phif_L = (double **)malloc(Nr*Nz*sizeof(double *));
     theDomain->fz_dphiL = (double **)malloc(Nr*Nz*sizeof(double *));
     for(j=0; j < Nr; j++)
     {
@@ -109,7 +100,6 @@ void setupDomain_soa2(struct domain *theDomain)
         theDomain->fz_iL[jk] = NULL;
         theDomain->fz_dA_L[jk] = NULL;
         theDomain->fz_phib_L[jk] = NULL;
-        theDomain->fz_phif_L[jk] = NULL;
         theDomain->fz_dphiL[jk] = NULL;
     }
 
@@ -121,15 +111,12 @@ void setupDomain_soa2(struct domain *theDomain)
             theDomain->fz_dA_L[jk] = (double *)malloc(Np[jk] * sizeof(double));
             theDomain->fz_phib_L[jk] = (double *)malloc(Np[jk]
                                                         * sizeof(double));
-            theDomain->fz_phif_L[jk] = (double *)malloc(Np[jk]
-                                                        * sizeof(double));
             theDomain->fz_dphiL[jk] = (double *)malloc(Np[jk] * sizeof(double));
         }
 
     theDomain->fz_iR = (int **)malloc(Nr*Nz*sizeof(int *));
     theDomain->fz_dA_R = (double **)malloc(Nr*Nz*sizeof(double *));
     theDomain->fz_phib_R = (double **)malloc(Nr*Nz*sizeof(double *));
-    theDomain->fz_phif_R = (double **)malloc(Nr*Nz*sizeof(double *));
     theDomain->fz_dphiR = (double **)malloc(Nr*Nz*sizeof(double *));
     
     for(j=0; j < Nr; j++)
@@ -138,7 +125,6 @@ void setupDomain_soa2(struct domain *theDomain)
         theDomain->fz_iR[jk] = NULL;
         theDomain->fz_dA_R[jk] = NULL;
         theDomain->fz_phib_R[jk] = NULL;
-        theDomain->fz_phif_R[jk] = NULL;
         theDomain->fz_dphiR[jk] = NULL;
     }
 
@@ -149,8 +135,6 @@ void setupDomain_soa2(struct domain *theDomain)
             theDomain->fz_iR[jk] = (int *)malloc(Np[jk] * sizeof(int));
             theDomain->fz_dA_R[jk] = (double *)malloc(Np[jk] * sizeof(double));
             theDomain->fz_phib_R[jk] = (double *)malloc(Np[jk]
-                                                        * sizeof(double));
-            theDomain->fz_phif_R[jk] = (double *)malloc(Np[jk]
                                                         * sizeof(double));
             theDomain->fz_dphiR[jk] = (double *)malloc(Np[jk] * sizeof(double));
         }
@@ -237,186 +221,146 @@ void setupDomain_soa2(struct domain *theDomain)
     }
 
 
-    build_faces_soa2(theDomain);
+    if(theDomain->Nr > 1)
+        build_faces_soa2(theDomain, DIM_R);
+    if(theDomain->Nz > 1)
+        build_faces_soa2(theDomain, DIM_Z);
 }
 
-void build_faces_soa2(struct domain *theDomain)
+void build_faces_soa2(struct domain *theDomain, int dim)
 {
+    if(dim != DIM_R && dim != DIM_Z)
+        return;
+
     int Nr = theDomain->Nr;
     int Nz = theDomain->Nz;
     int *Np = theDomain->Np;
     double phi_max = theDomain->phi_max;
     double **piph = theDomain->piph;
     double **dphi = theDomain->dphi;
-    int *I0 = theDomain->I0;
 
     double *r_jph = theDomain->r_jph;
     double *z_kph = theDomain->z_kph;
-
-    int *Nfr = theDomain->Nfr;
-    double **fr_dA = theDomain->fr_dA;
-    double **fr_phib = theDomain->fr_phib;
-    double **fr_phif = theDomain->fr_phif;
     
-    int *Nfz = theDomain->Nfz;
-    double **fz_dA = theDomain->fz_dA;
-    double **fz_phib = theDomain->fz_phib;
-    double **fz_phif = theDomain->fz_phif;
-
-    int jk;
-    
-    // Find faces crossing phi=0 & re-align piph to (0, phi_max]
-    for(jk=0; jk<Nr*Nz; jk++)
-    {
-        int i;
-
-        while(piph[jk][Np[jk]-1] > phi_max)
-            piph[jk][Np[jk]-1] -= phi_max;
-        while(piph[jk][Np[jk]-1] <= 0)
-            piph[jk][Np[jk]-1] += phi_max;
-        
-        I0[jk] = -1;
-
-        int adjust_check = 0;
-
-        for(i=0; i<Np[jk]; i++)
-        {
-            while(piph[jk][i] > phi_max)
-                piph[jk][i] -= phi_max;
-            while(piph[jk][i] <= 0)
-                piph[jk][i] += phi_max;
-
-            int im = i == 0 ? Np[jk]-1 : i-1;
-            dphi[jk][i] = piph[jk][i] - piph[jk][im];
-
-            if(dphi[jk][i] < 0.0)
-            {
-                I0[jk] = i;
-                dphi[jk][i] += phi_max;
-                adjust_check++;
-            }
-        }
-
-        if(I0[jk] == -1)
-            printf("BAD ALIGNMENT\n");
-        if(adjust_check != 1)
-            printf("Bad # of adjustments: %d\n", adjust_check);
-    }
-
-    // Now that we have a set of adjacent cells, we can find & compute faces
-
-    // radial faces
     int k;
     for(k=0; k<Nz; k++)
     {
-        double zm = z_kph[k-1];
-        double zp = z_kph[k];
-        
-        int j;
-        for(j=0; j<Nr-1; j++)
-        {
-            int jkL = k*Nr + j;
-            int jkR = k*Nr + j+1;
-            int jkf = k*(Nr-1) + j;
-
-            double r = r_jph[j];
-
-            int iL = I0[jkL];
-            int iR = I0[jkR];
-            int i;
-            for(i=0; i<Nfr[jkf]; i++)
-            {
-                double phifL = piph[jkL][iL];
-                double phifR = piph[jkR][iR];
-                if(phifR - phifL > 0.5*phi_max)
-                    phifL += phi_max;
-                else if(phifR - phifL < -0.5*phi_max)
-                    phifR += phi_max;
-
-                double phibL = phifL - dphi[jkL][iL];
-                double phibR = phifR - dphi[jkR][iR];
-                double phif = phifL > phifR ? phifR : phifL;
-                double phib = phibL > phibR ? phibL : phibR;
-                
-                //printf("    %d %d %d   %.03lf %.03lf\n", i, iL, iR,
-                //        phifL, phifR);
-
-                double xp[3] = {r, phif, zp};
-                double xm[3] = {r, phib, zm};
-
-                fr_dA[jkf][i] = get_dA(xp, xm, 1);
-                fr_phib[jkf][i] = phib;
-                fr_phif[jkf][i] = phif;
-
-                double dpLR = get_signed_dp(phifL, phifR);
-
-                if(dpLR < 0.0)
-                    iL = iL == Np[jkL]-1 ? 0 : iL+1;
-                else
-                    iR = iR == Np[jkR]-1 ? 0 : iR+1;
-            }
-            if(iL != I0[jkL] || iR != I0[jkR])
-                printf("Radial faces didn't finish: %d %d (%d) %d %d (%d)\n",
-                        iL, I0[jkL], Np[jkL], iR, I0[jkR], Np[jkR]);
-        }
-    }
-
-    for(k=0; k<Nz-1; k++)
-    {
-        double z = z_kph[k];
-        
         int j;
         for(j=0; j<Nr; j++)
         {
-            int jkL = k*Nr + j;
-            int jkR = (k+1)*Nr + j;
-            int jkf = k*Nr + j;
+            int jk = Nr*k + j;
+            int jkL, jkR;
 
-            double rm = r_jph[j-1];
-            double rp = r_jph[j];
-
-            int iL = I0[jkL];
-            int iR = I0[jkR];
-            int i;
-            for(i=0; i<Nfz[jkf]; i++)
+            if(dim == DIM_R)
             {
-                double phifL = piph[jkL][iL];
-                double phifR = piph[jkR][iR];
-                double phibL = phifL - dphi[jkL][iL];
-                double phibR = phifR - dphi[jkR][iR];
-                double phif = phifL > phifR ? phifR : phifL;
-                double phib = phibL > phibR ? phibL : phibR;
-
-                double xp[3] = {rp, phif, z};
-                double xm[3] = {rm, phib, z};
-
-                fz_dA[jkf][i] = get_dA(xp, xm, 2);
-                fz_phib[jkf][i] = phib;
-                fz_phif[jkf][i] = phif;
-
-                double dpLR = phifL - phifR;
-                while(dpLR > 0.5*phi_max)
-                    dpLR -= phi_max;
-                while(dpLR < -0.5*phi_max)
-                    dpLR += phi_max;
-
-                if(dpLR < 0.0)
+                jkL = jk - 1;
+                jkR = jk + 1;
+                
+                if(j > 0 && theDomain->fr_iL[jk] != NULL)
                 {
-                    iL++;
-                    if(iL == Np[jkL])
-                        iL = 0;
+                    fill_faces_soa2(Np[jk], Np[jkL], piph[jk], piph[jkL],
+                         dphi[jk], dphi[jkL],
+                         r_jph[j-1], r_jph[j-1], z_kph[k-1], z_kph[k],
+                         theDomain->fr_iL[jk], theDomain->fr_phib_L[jk],
+                         theDomain->fr_dA_L[jk], theDomain->fr_dphiL[jk],
+                         phi_max, 1, dim);
                 }
-                else
+
+                if(j < Nr-1 && theDomain->fr_iR[jk] != NULL)
                 {
-                    iR++;
-                    if(iR == Np[jkR])
-                        iR = 0;
+                    fill_faces_soa2(Np[jk], Np[jkR], piph[jk], piph[jkR],
+                         dphi[jk], dphi[jkR],
+                         r_jph[j], r_jph[j], z_kph[k-1], z_kph[k],
+                         theDomain->fr_iR[jk], theDomain->fr_phib_R[jk],
+                         theDomain->fr_dA_R[jk], theDomain->fr_dphiR[jk],
+                         phi_max, 1, dim);
+                }
+
+            }
+            else
+            {
+                jkL = jk - Nr;
+                jkR = jk + Nr;
+
+                if(k > 0 && theDomain->fz_iL[jk] != NULL)
+                {
+                    fill_faces_soa2(Np[jk], Np[jkL], piph[jk], piph[jkL],
+                         dphi[jk], dphi[jkL],
+                         r_jph[j-1], r_jph[j], z_kph[k-1], z_kph[k-1],
+                         theDomain->fz_iL[jk], theDomain->fz_phib_L[jk],
+                         theDomain->fz_dA_L[jk], theDomain->fz_dphiL[jk],
+                         phi_max, 1, dim);
+                }
+                if(k < Nz-1 && theDomain->fz_iR[jk] != NULL)
+                {
+                    fill_faces_soa2(Np[jk], Np[jkR], piph[jk], piph[jkR],
+                         dphi[jk], dphi[jkR],
+                         r_jph[j-1], r_jph[j], z_kph[k], z_kph[k],
+                         theDomain->fz_iR[jk], theDomain->fz_phib_R[jk],
+                         theDomain->fz_dA_R[jk], theDomain->fz_dphiR[jk],
+                         phi_max, 1, dim);
                 }
             }
-            if(iL != I0[jkL] || iR != I0[jkR])
-                printf("Vertical faces didn't finish: %d %d (%d) %d %d (%d)\n",
-                        iL, I0[jkL], Np[jkL], iR, I0[jkR], Np[jkR]);
         }
+    }
+}
+
+void fill_faces_soa2(int Np, int Np1, const double *piph, const double *piph1,
+                     const double *dphi, const double *dphi1,
+                     double rm, double rp, double zm, double zp,
+                     int *f_i, double *f_phib, double *f_dA, double *f_dphi,
+                     double phi_max, int inc_match, int dim)
+{
+    int i1 = 0;
+    int i;
+
+    while(get_signed_dp(piph1[i1], piph[0]) < 0.0 
+            || get_signed_dp(piph1[i1] - dphi1[i1], piph[0]) > 0.0)
+    {
+        i1 = (i1 == Np1-1) ? 0 : i1+1;
+    }
+
+    for(i=0; i<Np; i++)
+    {
+        // compute the offset between cells i and i1;
+        double offset = 0.0;
+        while((piph1[i1]+offset) - piph[i] > 0.5*phi_max)
+            offset -= phi_max;
+        while((piph1[i1]+offset) - piph[i] < -0.5*phi_max)
+            offset += phi_max;
+
+        // front of cell i1 adjusted to be on i's branch
+        double phif1 = piph1[i1] + offset;
+
+        // iterate i1 forwards until it intesects i's front
+        while(phif1 < piph[i] || phif1 - dphi1[i1] > piph[i])
+        {
+            i1 = (i1 == Np1-1) ? 0 : i1+1;
+
+            // update offset
+            while((piph1[i1]+offset) - piph[i] > 0.5*phi_max)
+                offset -= phi_max;
+            while((piph1[i1]+offset) - piph[i] < -0.5*phi_max)
+                offset += phi_max;
+
+            phif1 = piph1[i1] + offset;
+        }
+
+        // TODO: handle match case for quad
+
+        //Find back of face
+        double phib = phif1 - dphi1[i1];
+        if(phib < piph[i] - dphi[i])
+            phib = piph[i] - dphi[i];
+        double phif = piph[i];
+
+        double xm[3] = {rm, phib, zm};
+        double xp[3] = {rp, phif, zp};
+
+        f_i[i] = i1;
+        f_phib[i] = phib;
+        f_dA[i] = get_dA(xp, xm, dim);
+        f_dphi[i] = phif1 - phif;
     }
 }
 
@@ -437,46 +381,38 @@ void freeDomain_soa2(struct domain *theDomain)
         free(theDomain->gradz[jk]);
         free(theDomain->piph[jk]);
         free(theDomain->dphi[jk]);
-        if(theDomain->fr_iL != NULL)
-            free(theDomain->fr_iL);
-        if(theDomain->fr_dA_L != NULL)
-            free(theDomain->fr_dA_L);
-        if(theDomain->fr_phif_L != NULL)
-            free(theDomain->fr_phif_L);
-        if(theDomain->fr_phib_L != NULL)
-            free(theDomain->fr_phib_L);
-        if(theDomain->fr_dphiL != NULL)
-            free(theDomain->fr_dphiL);
-        if(theDomain->fr_iR != NULL)
-            free(theDomain->fr_iR);
-        if(theDomain->fr_dA_R != NULL)
-            free(theDomain->fr_dA_R);
-        if(theDomain->fr_phif_R != NULL)
-            free(theDomain->fr_phif_R);
-        if(theDomain->fr_phib_R != NULL)
-            free(theDomain->fr_phib_R);
-        if(theDomain->fr_dphiR != NULL)
-            free(theDomain->fr_dphiR);
-        if(theDomain->fz_iL != NULL)
-            free(theDomain->fz_iL);
-        if(theDomain->fz_dA_L != NULL)
-            free(theDomain->fz_dA_L);
-        if(theDomain->fz_phif_L != NULL)
-            free(theDomain->fz_phif_L);
-        if(theDomain->fz_phib_L != NULL)
-            free(theDomain->fz_phib_L);
-        if(theDomain->fz_dphiL != NULL)
-            free(theDomain->fz_dphiL);
-        if(theDomain->fz_iR != NULL)
-            free(theDomain->fz_iR);
-        if(theDomain->fz_dA_R != NULL)
-            free(theDomain->fz_dA_R);
-        if(theDomain->fz_phif_R != NULL)
-            free(theDomain->fz_phif_R);
-        if(theDomain->fz_phib_R != NULL)
-            free(theDomain->fz_phib_R);
-        if(theDomain->fz_dphiR != NULL)
-            free(theDomain->fz_dphiR);
+        if(theDomain->fr_iL[jk] != NULL)
+            free(theDomain->fr_iL[jk]);
+        if(theDomain->fr_dA_L[jk] != NULL)
+            free(theDomain->fr_dA_L[jk]);
+        if(theDomain->fr_phib_L[jk] != NULL)
+            free(theDomain->fr_phib_L[jk]);
+        if(theDomain->fr_dphiL[jk] != NULL)
+            free(theDomain->fr_dphiL[jk]);
+        if(theDomain->fr_iR[jk] != NULL)
+            free(theDomain->fr_iR[jk]);
+        if(theDomain->fr_dA_R[jk] != NULL)
+            free(theDomain->fr_dA_R[jk]);
+        if(theDomain->fr_phib_R[jk] != NULL)
+            free(theDomain->fr_phib_R[jk]);
+        if(theDomain->fr_dphiR[jk] != NULL)
+            free(theDomain->fr_dphiR[jk]);
+        if(theDomain->fz_iL[jk] != NULL)
+            free(theDomain->fz_iL[jk]);
+        if(theDomain->fz_dA_L[jk] != NULL)
+            free(theDomain->fz_dA_L[jk]);
+        if(theDomain->fz_phib_L[jk] != NULL)
+            free(theDomain->fz_phib_L[jk]);
+        if(theDomain->fz_dphiL[jk] != NULL)
+            free(theDomain->fz_dphiL[jk]);
+        if(theDomain->fz_iR[jk] != NULL)
+            free(theDomain->fz_iR[jk]);
+        if(theDomain->fz_dA_R[jk] != NULL)
+            free(theDomain->fz_dA_R[jk]);
+        if(theDomain->fz_phib_R[jk] != NULL)
+            free(theDomain->fz_phib_R[jk]);
+        if(theDomain->fz_dphiR[jk] != NULL)
+            free(theDomain->fz_dphiR[jk]);
     }
     free(theDomain->prim);
     free(theDomain->cons);
@@ -488,22 +424,18 @@ void freeDomain_soa2(struct domain *theDomain)
 
     free(theDomain->fr_iL);
     free(theDomain->fr_dA_L);
-    free(theDomain->fr_phif_L);
     free(theDomain->fr_phib_L);
     free(theDomain->fr_dphiL);
     free(theDomain->fr_iR);
     free(theDomain->fr_dA_R);
-    free(theDomain->fr_phif_R);
     free(theDomain->fr_phib_R);
     free(theDomain->fr_dphiR);
     free(theDomain->fz_iL);
     free(theDomain->fz_dA_L);
-    free(theDomain->fz_phif_L);
     free(theDomain->fz_phib_L);
     free(theDomain->fz_dphiL);
     free(theDomain->fz_iR);
     free(theDomain->fz_dA_R);
-    free(theDomain->fz_phif_R);
     free(theDomain->fz_phib_R);
     free(theDomain->fz_dphiR);
 

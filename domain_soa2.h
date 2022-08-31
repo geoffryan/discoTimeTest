@@ -4,9 +4,15 @@
 #include "header.h"
 
 void setupDomain_soa2(struct domain *theDomain);
-void build_faces_soa2(struct domain *theDomain);
+void build_faces_soa2(struct domain *theDomain, int dim);
 void freeDomain_soa2(struct domain *theDomain);
 double hash_soa2(struct domain *theDomain, int qqq);
 void dump_grid_soa2(struct domain *theDomain);
+
+void fill_faces_soa2(int Np, int Np1, const double *piph, const double *piph1,
+                     const double *dphi, const double *dphi1,
+                     double rm, double rp, double zm, double zp,
+                     int *f_i, double *f_phib, double *f_dA, double *f_dphi,
+                     double phi_max, int inc_match, int dim);
 
 #endif

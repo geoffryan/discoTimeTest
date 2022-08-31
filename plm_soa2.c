@@ -72,8 +72,6 @@ void plm_r_soa2(struct domain *theDomain)
     double *r_jph = theDomain->r_jph;
     double *z_kph = theDomain->z_kph;
 
-    int *Nfr = theDomain->Nfr;
-
     double PLM = 1.5;
    
     // Clear radial gradients
@@ -90,56 +88,96 @@ void plm_r_soa2(struct domain *theDomain)
 
     // Add face-centered gradients
     for(k=0; k<Nz; k++)
-        for(j=0; j<Nr-1; j++)
+        for(j=0; j<Nr; j++)
         {
-            int jkL = j+Nr*k;
-            int jkR = j+1+Nr*k;
-            int jkf = j + (Nr-1)*k;
+            int jk = j+Nr*k;
+            int jkL = jk-1;
+            int jkR = jk+1;
 
-            double *piphL = theDomain->piph[jkL];
-            double *dphiL = theDomain->dphi[jkL];
-            double *primL = theDomain->prim[jkL];
-            double *gradrL = theDomain->gradr[jkL];
-            double *gradpL = theDomain->gradp[jkL];
-            
-            double *piphR = theDomain->piph[jkR];
-            double *dphiR = theDomain->dphi[jkR];
-            double *primR = theDomain->prim[jkR];
-            double *gradrR = theDomain->gradr[jkR];
-            double *gradpR = theDomain->gradp[jkR];
-            
-            double *fr_dA = theDomain->fr_dA[jkf];
-            double *fr_phif = theDomain->fr_phif[jkf];
-            double *fr_phib = theDomain->fr_phib[jkf];
+            double *piph = theDomain->piph[jk];
+            double *dphi = theDomain->dphi[jk];
+            double *prim = theDomain->prim[jk];
+            double *gradr = theDomain->gradr[jk];
+            double *gradp = theDomain->gradp[jk];
 
-            double rL = get_centroid(r_jph[j], r_jph[j-1], 1);
-            double rR = get_centroid(r_jph[j+1], r_jph[j], 1);
-            double idr = 1.0/(rR - rL);
+            double r = get_centroid(r_jph[j], r_jph[j-1], DIM_R);
 
-            int iL = theDomain->I0[jkL];
-            int iR = theDomain->I0[jkR];
-
-            for( i=0 ; i<Nfr[jkf] ; ++i )
+            if(j > 0)
             {
-                double dpL = get_signed_dp(0.5*(fr_phif[i]+fr_phib[i]), 
-                                           piphL[iL] - 0.5*dphiL[iL]);
-                double dpR = get_signed_dp(0.5*(fr_phif[i]+fr_phib[i]), 
-                                           piphR[iR] - 0.5*dphiR[iR]);
+                double rL = get_centroid(r_jph[j-1], r_jph[j-2], DIM_R);
 
-                for( q=0 ; q<NUM_Q ; ++q )
+                double *dphiL = theDomain->dphi[jkL];
+                double *primL = theDomain->prim[jkL];
+                double *gradrL = theDomain->gradr[jkL];
+                double *gradpL = theDomain->gradp[jkL];
+
+                int *fr_iL = theDomain->fr_iL[jk];
+                double *fr_dA_L = theDomain->fr_dA_L[jk];
+                double *fr_phib_L = theDomain->fr_phib_L[jk];
+                double *fr_dphiL = theDomain->fr_dphiL[jk];
+                    
+                double idr = 1.0 / (r - rL);
+
+                for(i=0; i<Np[jk]; i++)
                 {
-                    double fL = primL[NUM_Q*iL+q] + dpL * gradpL[NUM_Q*iL+q];
-                    double fR = primR[NUM_Q*iR+q] + dpR * gradpR[NUM_Q*iR+q];
-                    double gr = (fR - fL) * fr_dA[i] * idr;
-                    gradrL[NUM_Q*iL+q] += gr;
-                    gradrR[NUM_Q*iR+q] += gr;
-                }
+                    int iL = fr_iL[i];
+                    double phi = piph[i] - 0.5*dphi[i];
+                    double phif = 0.5*(fr_phib_L[i] + piph[i]);
+                    double phiL = piph[i] + fr_dphiL[i] - 0.5*dphiL[iL];
 
-                double dpLR = get_signed_dp(piphL[iL], piphR[iR]);
-                if(dpLR < 0)
-                    iL = iL==Np[jkL]-1 ? 0 : iL+1;
-                else
-                    iR = iR==Np[jkR]-1 ? 0 : iR+1;
+                    double dpL = phif - phiL;
+                    double dpR = phif - phi;
+
+                    for(q=0; q<NUM_Q; q++)
+                    {
+                        int iq = NUM_Q*i + q;
+                        int iqL = NUM_Q*iL + q;
+                        double fL = primL[iqL] + dpL * gradpL[iqL];
+                        double fR = prim[iq] + dpR * gradp[iq];
+                        double gr = (fR - fL) * idr;
+                        gradrL[iqL] += gr * fr_dA_L[i];
+                        gradr[iq] += gr * fr_dA_L[i];
+                    }
+                }
+            }
+
+            if(j < Nr-1)
+            {
+                double rR = get_centroid(r_jph[j+1], r_jph[j], DIM_R);
+
+                double *dphiR = theDomain->dphi[jkR];
+                double *primR = theDomain->prim[jkR];
+                double *gradrR = theDomain->gradr[jkR];
+                double *gradpR = theDomain->gradp[jkR];
+
+                int *fr_iR = theDomain->fr_iR[jk];
+                double *fr_dA_R = theDomain->fr_dA_R[jk];
+                double *fr_phib_R = theDomain->fr_phib_R[jk];
+                double *fr_dphiR = theDomain->fr_dphiR[jk];
+                    
+                double idr = 1.0 / (rR - r);
+
+                for(i=0; i<Np[jk]; i++)
+                {
+                    int iR = fr_iR[i];
+                    double phi = piph[i] - 0.5*dphi[i];
+                    double phif = 0.5*(fr_phib_R[i] + piph[i]);
+                    double phiR = piph[i] + fr_dphiR[i] - 0.5*dphiR[iR];
+
+                    double dpL = phif - phi;
+                    double dpR = phif - phiR;
+
+                    for(q=0; q<NUM_Q; q++)
+                    {
+                        int iq = NUM_Q*i + q;
+                        int iqR = NUM_Q*iR + q;
+                        double fL = prim[iq] + dpL * gradp[iq];
+                        double fR = primR[iqR] + dpR * gradpR[iqR];
+                        double gr = (fR - fL) * idr;
+                        gradr[iq] += gr * fr_dA_R[i];
+                        gradrR[iqR] += gr * fr_dA_R[i];
+                    }
+                }
             }
         }
    
@@ -189,62 +227,110 @@ void plm_r_soa2(struct domain *theDomain)
     for(k=0; k<Nz; k++)
         for(j=0; j<Nr-1; j++)
         {
-            int jkL = j+Nr*k;
-            int jkR = j+1+Nr*k;
-            int jkf = j + (Nr-1)*k;
+            int jk = j+Nr*k;
+            int jkL = jk-1;
+            int jkR = jk+1;
 
-            double *piphL = theDomain->piph[jkL];
-            double *dphiL = theDomain->dphi[jkL];
-            double *primL = theDomain->prim[jkL];
-            double *gradrL = theDomain->gradr[jkL];
-            double *gradpL = theDomain->gradp[jkL];
-            
-            double *piphR = theDomain->piph[jkR];
-            double *dphiR = theDomain->dphi[jkR];
-            double *primR = theDomain->prim[jkR];
-            double *gradrR = theDomain->gradr[jkR];
-            double *gradpR = theDomain->gradp[jkR];
-            
-            double *fr_phif = theDomain->fr_phif[jkf];
-            double *fr_phib = theDomain->fr_phib[jkf];
+            double *piph = theDomain->piph[jk];
+            double *dphi = theDomain->dphi[jk];
+            double *prim = theDomain->prim[jk];
+            double *gradr = theDomain->gradr[jk];
+            double *gradp = theDomain->gradp[jk];
 
-            double rL = get_centroid(r_jph[j], r_jph[j-1], 1);
-            double rR = get_centroid(r_jph[j+1], r_jph[j], 1);
-            double idr = 1.0/(rR - rL);
+            double r = get_centroid(r_jph[j], r_jph[j-1], DIM_R);
 
-            int iL = theDomain->I0[jkL];
-            int iR = theDomain->I0[jkR];
-
-            for( i=0 ; i<Nfr[jkf] ; ++i )
+            if(j > 0)
             {
-                double dpL = get_signed_dp(0.5*(fr_phif[i]+fr_phib[i]), 
-                                           piphL[iL] - 0.5*dphiL[iL]);
-                double dpR = get_signed_dp(0.5*(fr_phif[i]+fr_phib[i]), 
-                                           piphR[iR] - 0.5*dphiR[iR]);
+                double rL = get_centroid(r_jph[j-1], r_jph[j-2], DIM_R);
 
-                for( q=0 ; q<NUM_Q ; ++q )
+                double *dphiL = theDomain->dphi[jkL];
+                double *primL = theDomain->prim[jkL];
+                double *gradrL = theDomain->gradr[jkL];
+                double *gradpL = theDomain->gradp[jkL];
+
+                int *fr_iL = theDomain->fr_iL[jk];
+                double *fr_phib_L = theDomain->fr_phib_L[jk];
+                double *fr_dphiL = theDomain->fr_dphiL[jk];
+                    
+                double idr = 1.0 / (r - rL);
+
+                for(i=0; i<Np[jk]; i++)
                 {
-                    double fL = primL[NUM_Q*iL+q] + dpL * gradpL[NUM_Q*iL+q];
-                    double fR = primR[NUM_Q*iR+q] + dpR * gradpR[NUM_Q*iR+q];
-                    double gr = (fR - fL) * idr;
-                    double grL = gradrL[NUM_Q*iL+q];
-                    double grR = gradrR[NUM_Q*iR+q];
-                    if(gr*grL < 0.0)
-                        gradrL[NUM_Q*iL+q] = 0.0;
-                    else if(fabs(PLM*gr) < fabs(grL))
-                        gradrL[NUM_Q*iL+q] = PLM*gr;
+                    int iL = fr_iL[i];
+                    double phi = piph[i] - 0.5*dphi[i];
+                    double phif = 0.5*(fr_phib_L[i] + piph[i]);
+                    double phiL = piph[i] + fr_dphiL[i] - 0.5*dphiL[iL];
 
-                    if(gr*grR < 0.0)
-                        gradrR[NUM_Q*iR+q] = 0.0;
-                    else if(fabs(PLM*gr) < fabs(grR))
-                        gradrR[NUM_Q*iR+q] = PLM*gr;
+                    double dpL = phif - phiL;
+                    double dpR = phif - phi;
+
+                    for(q=0; q<NUM_Q; q++)
+                    {
+                        int iq = NUM_Q*i + q;
+                        int iqL = NUM_Q*iL + q;
+                        double fL = primL[iqL] + dpL * gradpL[iqL];
+                        double fR = prim[iq] + dpR * gradp[iq];
+                        double gr = (fR - fL) * idr;
+                        double grL = gradrL[iqL];
+                        double grR = gradr[iq];
+                        if(gr*grL < 0.0)
+                            gradrL[iqL] = 0.0;
+                        else if(fabs(PLM*gr) < fabs(grL))
+                            gradrL[iqL] = PLM*gr;
+
+                        if(gr*grR < 0.0)
+                            gradr[iq] = 0.0;
+                        else if(fabs(PLM*gr) < fabs(grR))
+                            gradr[iq] = PLM*gr;
+                    }
                 }
+            }
 
-                double dpLR = get_signed_dp(piphL[iL], piphR[iR]);
-                if(dpLR < 0)
-                    iL = iL==Np[jkL]-1 ? 0 : iL+1;
-                else
-                    iR = iR==Np[jkR]-1 ? 0 : iR+1;
+            if(j < Nr-1)
+            {
+                double rR = get_centroid(r_jph[j+1], r_jph[j], DIM_R);
+
+                double *dphiR = theDomain->dphi[jkR];
+                double *primR = theDomain->prim[jkR];
+                double *gradrR = theDomain->gradr[jkR];
+                double *gradpR = theDomain->gradp[jkR];
+
+                int *fr_iR = theDomain->fr_iR[jk];
+                double *fr_phib_R = theDomain->fr_phib_R[jk];
+                double *fr_dphiR = theDomain->fr_dphiR[jk];
+                    
+                double idr = 1.0 / (rR - r);
+
+                for(i=0; i<Np[jk]; i++)
+                {
+                    int iR = fr_iR[i];
+                    double phi = piph[i] - 0.5*dphi[i];
+                    double phif = 0.5*(fr_phib_R[i] + piph[i]);
+                    double phiR = piph[i] + fr_dphiR[i] - 0.5*dphiR[iR];
+
+                    double dpL = phif - phi;
+                    double dpR = phif - phiR;
+
+                    for(q=0; q<NUM_Q; q++)
+                    {
+                        int iq = NUM_Q*i + q;
+                        int iqR = NUM_Q*iR + q;
+                        double fL = prim[iq] + dpL * gradp[iq];
+                        double fR = primR[iqR] + dpR * gradpR[iqR];
+                        double gr = (fR - fL) * idr;
+                        double grL = gradr[iq];
+                        double grR = gradrR[iqR];
+                        if(gr*grL < 0.0)
+                            gradr[iq] = 0.0;
+                        else if(fabs(PLM*gr) < fabs(grL))
+                            gradr[iq] = PLM*gr;
+
+                        if(gr*grR < 0.0)
+                            gradrR[iqR] = 0.0;
+                        else if(fabs(PLM*gr) < fabs(grR))
+                            gradrR[iqR] = PLM*gr;
+                    }
+                }
             }
         }
 }
