@@ -15,7 +15,9 @@ runTiming () {
     ./disco > out.${1}.${2}.txt
     grep "Profiler total:" times.log
     mv times.log times.${1}.${2}.log
-    mv grid.txt grid.${1}.${2}.txt
+    if test -f grid.txt; then
+        mv grid.txt grid.${1}.${2}.txt
+    fi
 }
 
 runTiming 0 0
