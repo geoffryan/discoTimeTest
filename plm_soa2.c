@@ -113,8 +113,8 @@ void plm_r_soa2(struct domain *theDomain)
 
                 int *fr_iL = theDomain->fr_iL[jk];
                 double *fr_dA_L = theDomain->fr_dA_L[jk];
-                double *fr_phib_L = theDomain->fr_phib_L[jk];
-                double *fr_dphiL = theDomain->fr_dphiL[jk];
+                double *fr_dphi_L = theDomain->fr_dphi_L[jk];
+                double *fr_offset_L = theDomain->fr_offset_L[jk];
                     
                 double idr = 1.0 / (r - rL);
 
@@ -122,8 +122,8 @@ void plm_r_soa2(struct domain *theDomain)
                 {
                     int iL = fr_iL[i];
                     double phi = piph[i] - 0.5*dphi[i];
-                    double phif = 0.5*(fr_phib_L[i] + piph[i]);
-                    double phiL = piph[i] + fr_dphiL[i] - 0.5*dphiL[iL];
+                    double phif = piph[i] - 0.5*fr_dphi_L[i];
+                    double phiL = piph[i] + fr_offset_L[i] - 0.5*dphiL[iL];
 
                     double dpL = phif - phiL;
                     double dpR = phif - phi;
@@ -152,8 +152,8 @@ void plm_r_soa2(struct domain *theDomain)
 
                 int *fr_iR = theDomain->fr_iR[jk];
                 double *fr_dA_R = theDomain->fr_dA_R[jk];
-                double *fr_phib_R = theDomain->fr_phib_R[jk];
-                double *fr_dphiR = theDomain->fr_dphiR[jk];
+                double *fr_dphi_R = theDomain->fr_dphi_R[jk];
+                double *fr_offset_R = theDomain->fr_offset_R[jk];
                     
                 double idr = 1.0 / (rR - r);
 
@@ -161,8 +161,8 @@ void plm_r_soa2(struct domain *theDomain)
                 {
                     int iR = fr_iR[i];
                     double phi = piph[i] - 0.5*dphi[i];
-                    double phif = 0.5*(fr_phib_R[i] + piph[i]);
-                    double phiR = piph[i] + fr_dphiR[i] - 0.5*dphiR[iR];
+                    double phif = piph[i] - 0.5*fr_dphi_R[i];
+                    double phiR = piph[i] + fr_offset_R[i] - 0.5*dphiR[iR];
 
                     double dpL = phif - phi;
                     double dpR = phif - phiR;
@@ -225,7 +225,7 @@ void plm_r_soa2(struct domain *theDomain)
     
     // Slope Limit
     for(k=0; k<Nz; k++)
-        for(j=0; j<Nr-1; j++)
+        for(j=0; j<Nr; j++)
         {
             int jk = j+Nr*k;
             int jkL = jk-1;
@@ -249,8 +249,8 @@ void plm_r_soa2(struct domain *theDomain)
                 double *gradpL = theDomain->gradp[jkL];
 
                 int *fr_iL = theDomain->fr_iL[jk];
-                double *fr_phib_L = theDomain->fr_phib_L[jk];
-                double *fr_dphiL = theDomain->fr_dphiL[jk];
+                double *fr_dphi_L = theDomain->fr_dphi_L[jk];
+                double *fr_offset_L = theDomain->fr_offset_L[jk];
                     
                 double idr = 1.0 / (r - rL);
 
@@ -258,8 +258,8 @@ void plm_r_soa2(struct domain *theDomain)
                 {
                     int iL = fr_iL[i];
                     double phi = piph[i] - 0.5*dphi[i];
-                    double phif = 0.5*(fr_phib_L[i] + piph[i]);
-                    double phiL = piph[i] + fr_dphiL[i] - 0.5*dphiL[iL];
+                    double phif = piph[i] - 0.5*fr_dphi_L[i];
+                    double phiL = piph[i] + fr_offset_L[i] - 0.5*dphiL[iL];
 
                     double dpL = phif - phiL;
                     double dpR = phif - phi;
@@ -296,8 +296,8 @@ void plm_r_soa2(struct domain *theDomain)
                 double *gradpR = theDomain->gradp[jkR];
 
                 int *fr_iR = theDomain->fr_iR[jk];
-                double *fr_phib_R = theDomain->fr_phib_R[jk];
-                double *fr_dphiR = theDomain->fr_dphiR[jk];
+                double *fr_dphi_R = theDomain->fr_dphi_R[jk];
+                double *fr_offset_R = theDomain->fr_offset_R[jk];
                     
                 double idr = 1.0 / (rR - r);
 
@@ -305,8 +305,8 @@ void plm_r_soa2(struct domain *theDomain)
                 {
                     int iR = fr_iR[i];
                     double phi = piph[i] - 0.5*dphi[i];
-                    double phif = 0.5*(fr_phib_R[i] + piph[i]);
-                    double phiR = piph[i] + fr_dphiR[i] - 0.5*dphiR[iR];
+                    double phif = piph[i] - 0.5*fr_dphi_R[i];
+                    double phiR = piph[i] + fr_offset_R[i] - 0.5*dphiR[iR];
 
                     double dpL = phif - phi;
                     double dpR = phif - phiR;

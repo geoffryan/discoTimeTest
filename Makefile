@@ -15,8 +15,9 @@ OPT_DEFS += -DNUM_N=$(NUM_N)
 OPT_DEFS += -DCT_MODE=$(CT_MODE)
 OPT_DEFS += -DTYPE=$(TYPE)
 OPT_DEFS += -DSUBTYPE=$(SUBTYPE)
+OPT_DEFS += -DDEBUG=$(DEBUG)
 
-FLAGS = -Wall -g $(OPT_DEFS) $(DIR_DEFS)
+FLAGS = -Wall -g $(OPT_DEFS) $(DIR_DEFS) -Wno-strict-aliasing
 
 INC = 
 LIB = -lm

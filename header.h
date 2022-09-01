@@ -102,27 +102,23 @@ struct domain{
    //SOA2 setup
    int **fr_iL;
    double **fr_dA_L;
-   double **fr_phib_L;
-   double **fr_phif_L;
-   double **fr_dphiL;
+   double **fr_dphi_L;
+   double **fr_offset_L;
 
    int **fr_iR;
    double **fr_dA_R;
-   double **fr_phib_R;
-   double **fr_phif_R;
-   double **fr_dphiR;
+   double **fr_dphi_R;
+   double **fr_offset_R;
    
    int **fz_iL;
    double **fz_dA_L;
-   double **fz_phib_L;
-   double **fz_phif_L;
-   double **fz_dphiL;
+   double **fz_dphi_L;
+   double **fz_offset_L;
 
    int **fz_iR;
    double **fz_dA_R;
-   double **fz_phib_R;
-   double **fz_phif_R;
-   double **fz_dphiR;
+   double **fz_dphi_R;
+   double **fz_offset_R;
 };
 
 struct cell{

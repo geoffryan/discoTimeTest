@@ -431,11 +431,13 @@ double hash_soa1(struct domain *theDomain, int qqq)
     return sum;
 }
 
-void dump_grid_soa1(struct domain *theDomain)
+void dump_grid_soa1(struct domain *theDomain, char label[])
 {
     int i, j, k;
 
-    char filename[] = "grid.txt";
+    char filename[512];
+    sprintf(filename, "grid.%d%d.%03d.%s.txt", TYPE, SUBTYPE,
+            theDomain->current_step, label);
     FILE *f = fopen(filename, "w");
 
     for(k=0; k<theDomain->Nz; k++)
@@ -449,18 +451,21 @@ void dump_grid_soa1(struct domain *theDomain)
 
                 int q;
                 for(q = 0; q < NUM_Q; q++)
-                    fprintf(f, " %.6le", theDomain->prim[jk][i*NUM_Q+q]);
-                fprintf(f, "   %.6le", theDomain->piph[jk][i]);
-                fprintf(f, "   %.6le", theDomain->dphi[jk][i]);
+                    fprintf(f, " %.12le", theDomain->prim[jk][i*NUM_Q+q]);
+                fprintf(f, "   %.12le", theDomain->piph[jk][i]);
+                fprintf(f, "   %.12le", theDomain->dphi[jk][i]);
                 fprintf(f, "\n              ");
                 for(q = 0; q < NUM_Q; q++)
-                    fprintf(f, " %.6le", theDomain->gradr[jk][i*NUM_Q+q]);
+                    fprintf(f, " %.12le", theDomain->cons[jk][i*NUM_Q+q]);
                 fprintf(f, "\n              ");
                 for(q = 0; q < NUM_Q; q++)
-                    fprintf(f, " %.6le", theDomain->gradp[jk][i*NUM_Q+q]);
+                    fprintf(f, " %.12le", theDomain->gradr[jk][i*NUM_Q+q]);
                 fprintf(f, "\n              ");
                 for(q = 0; q < NUM_Q; q++)
-                    fprintf(f, " %.6le", theDomain->gradz[jk][i*NUM_Q+q]);
+                    fprintf(f, " %.12le", theDomain->gradp[jk][i*NUM_Q+q]);
+                fprintf(f, "\n              ");
+                for(q = 0; q < NUM_Q; q++)
+                    fprintf(f, " %.12le", theDomain->gradz[jk][i*NUM_Q+q]);
                 fprintf(f, "\n");
             }
         }
