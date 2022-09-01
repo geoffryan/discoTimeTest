@@ -15,13 +15,14 @@ OPT_DEFS += -DNUM_N=$(NUM_N)
 OPT_DEFS += -DCT_MODE=$(CT_MODE)
 OPT_DEFS += -DTYPE=$(TYPE)
 OPT_DEFS += -DSUBTYPE=$(SUBTYPE)
+OPT_DEFS += -DDEBUG=$(DEBUG)
 
-FLAGS = -Wall -g $(OPT_DEFS) $(DIR_DEFS)
+FLAGS = -Wall -g $(OPT_DEFS) $(DIR_DEFS) -Wno-strict-aliasing
 
 INC = 
 LIB = -lm
 
-OBJ = main.o readpar.o faces.o grid.o profiler.o geometry.o geometry_functions.o hydro.o timestep.o domain_aos.o substep_aos.o plm_aos.o domain_soa1.o substep_soa1.o plm_soa1.o
+OBJ = main.o readpar.o faces.o grid.o profiler.o geometry.o geometry_functions.o hydro.o timestep.o domain_aos.o substep_aos.o plm_aos.o domain_soa1.o substep_soa1.o plm_soa1.o domain_soa2.o substep_soa2.o plm_soa2.o
 
 default: disco
 

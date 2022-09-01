@@ -242,11 +242,13 @@ double hash_aos(struct domain *theDomain, int qqq)
     return sum;
 }
 
-void dump_grid_aos(struct domain *theDomain)
+void dump_grid_aos(struct domain *theDomain, char label[])
 {
     int i, j, k;
 
-    char filename[] = "grid.txt";
+    char filename[512];
+    sprintf(filename, "grid.%d%d.%03d.%s.txt", TYPE, SUBTYPE,
+            theDomain->current_step, label);
     FILE *f = fopen(filename, "w");
 
     for(k=0; k<theDomain->Nz; k++)
@@ -260,18 +262,21 @@ void dump_grid_aos(struct domain *theDomain)
 
                 int q;
                 for(q = 0; q < NUM_Q; q++)
-                    fprintf(f, " %.6le", theDomain->theCells[jk][i].prim[q]);
-                fprintf(f, "   %.6le", theDomain->theCells[jk][i].piph);
-                fprintf(f, "   %.6le", theDomain->theCells[jk][i].dphi);
+                    fprintf(f, " %.12le", theDomain->theCells[jk][i].prim[q]);
+                fprintf(f, "   %.12le", theDomain->theCells[jk][i].piph);
+                fprintf(f, "   %.12le", theDomain->theCells[jk][i].dphi);
                 fprintf(f, "\n              ");
                 for(q = 0; q < NUM_Q; q++)
-                    fprintf(f, " %.6le", theDomain->theCells[jk][i].gradr[q]);
+                    fprintf(f, " %.12le", theDomain->theCells[jk][i].cons[q]);
                 fprintf(f, "\n              ");
                 for(q = 0; q < NUM_Q; q++)
-                    fprintf(f, " %.6le", theDomain->theCells[jk][i].gradp[q]);
+                    fprintf(f, " %.12le", theDomain->theCells[jk][i].gradr[q]);
                 fprintf(f, "\n              ");
                 for(q = 0; q < NUM_Q; q++)
-                    fprintf(f, " %.6le", theDomain->theCells[jk][i].gradz[q]);
+                    fprintf(f, " %.12le", theDomain->theCells[jk][i].gradp[q]);
+                fprintf(f, "\n              ");
+                for(q = 0; q < NUM_Q; q++)
+                    fprintf(f, " %.12le", theDomain->theCells[jk][i].gradz[q]);
                 fprintf(f, "\n");
             }
         }

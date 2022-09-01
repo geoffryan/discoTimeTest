@@ -4,5 +4,6 @@
 #include "header.h"
 
 void timestep(struct domain *theDomain);
+void dump(struct domain *theDomain, char label[]);
 
 #endif

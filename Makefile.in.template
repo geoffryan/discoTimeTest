@@ -7,3 +7,5 @@ NUM_N	 = 2	# Number of passive variables   (>=0)
 CT_MODE	 = 1	# CT mode 0 or 1
 TYPE	 = 0
 SUBTYPE	 = 0
+
+DEBUG    = 0

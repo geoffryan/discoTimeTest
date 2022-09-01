@@ -4,6 +4,7 @@
 enum{RHO,PPP,URR,UPP,UZZ,BRR,BPP,BZZ};
 enum{DDD,TAU,SRR,LLL,SZZ};
 enum{PLPOINTMASS, PLPW, PLSURFACEGRAV, PLALEX, PLQUAD};
+enum{DIM_P, DIM_R, DIM_Z};
 
 enum{PROF_TOT, PROF_DT, PROF_TIMESTEP, PROF_OUTPUT, PROF_RECON, PROF_FLUX,
      PROF_CT, PROF_SOURCE, PROF_C2P, PROF_BOUND, PROF_EXCHANGE,
@@ -97,6 +98,27 @@ struct domain{
    double **fz_dA;
    double **fz_phib;
    double **fz_phif;
+
+   //SOA2 setup
+   int **fr_iL;
+   double **fr_dA_L;
+   double **fr_dphi_L;
+   double **fr_offset_L;
+
+   int **fr_iR;
+   double **fr_dA_R;
+   double **fr_dphi_R;
+   double **fr_offset_R;
+   
+   int **fz_iL;
+   double **fz_dA_L;
+   double **fz_dphi_L;
+   double **fz_offset_L;
+
+   int **fz_iR;
+   double **fz_dA_R;
+   double **fz_dphi_R;
+   double **fz_offset_R;
 };
 
 struct cell{

@@ -1,4 +1,4 @@
-runTiming () {
+runAll () {
     
     if [ "$(uname)" == "Darwin" ]; then
         sed -e "s/^TYPE[[:blank:]].*$/TYPE = ${1}/" -i '' Makefile.in
@@ -12,15 +12,10 @@ runTiming () {
     make -s clean
     make -s
     echo "Running ${1} ${2}"
-    ./disco > out.${1}.${2}.txt
-    grep "Profiler total:" times.log
-    mv times.log times.${1}.${2}.log
-    if test -f grid.txt; then
-        mv grid.txt grid.${1}.${2}.txt
-    fi
+    ./disco > out.${1}${2}.txt
 }
 
-runTiming 0 0
-runTiming 1 0
-runTiming 1 1
-runTiming 2 0
+runAll 0 0
+runAll 1 0
+runAll 1 1
+runAll 2 0
